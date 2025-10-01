@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PPL Song Sender</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Homemade+Apple&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="sendcss.css">
+</head>
+<body>
+  <!-- Background Elements -->
+  <div class="bg-elements">
+    <div class="bg-circle bg-circle-1"></div>
+    <div class="bg-circle bg-circle-2"></div>
+    <div class="bg-circle bg-circle-3"></div>
+    <div class="music-notes">
+      <i class="fas fa-music music-note music-note-1"></i>
+      <i class="fas fa-music music-note music-note-2"></i>
+      <i class="fas fa-music music-note music-note-3"></i>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1>🎶 Kirim Lagu untuk Teman 🎶</h1>
+      <p>Bagikan perasaanmu melalui lagu</p>
+    </header>
+
+    <!-- Cara Mengirim Lagu -->
+    <section class="how-to">
+      <h2>📖 Cara Mengirim Lagu</h2>
+      <div class="steps-container">
+        <div class="step">
+          <div class="step-icon">✍️</div>
+          <p>Isi <b>Tujuan</b> dengan nama orang yang ingin kamu kirimi lagu.</p>
+        </div>
+        <div class="step">
+          <div class="step-icon">🎵</div>
+          <p>Copy link lagu dari <b>Spotify</b> atau <b>YouTube</b>, lalu paste ke kolom <b>Link Lagu</b>.</p>
+        </div>
+        <div class="step">
+          <div class="step-icon">💌</div>
+          <p>Tulis pesan spesialmu di kolom <b>Pesan</b>.</p>
+        </div>
+        <div class="step">
+          <div class="step-icon">🚀</div>
+          <p>Klik tombol <b>Kirim Lagu</b> untuk mengirim.</p>
+        </div>
+        <div class="step">
+          <div class="step-icon">✨</div>
+          <p>Lagumu akan muncul di bawah dalam bentuk kartu keren!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Form -->
+    <form id="songForm" class="song-form">
+      <div class="form-group">
+        <label for="receiver">Nama Penerima</label>
+        <input type="text" id="receiver" placeholder="Nama penerima" required>
+      </div>
+      <div class="form-group">
+        <label for="songLink">Link Lagu</label>
+        <input type="text" id="songLink" placeholder="Link lagu (Spotify/Youtube/MP3)" required>
+      </div>
+      <div class="form-group">
+        <label for="message">Pesan</label>
+        <textarea id="message" placeholder="Tulis pesanmu..." rows="4" required></textarea>
+      </div>
+      <button type="submit" class="submit-btn">
+        <span>Kirim Lagu</span>
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </form>
+
+    <!-- Preview -->
+    <div id="preview" class="preview-container"></div>
+
+    <!-- History -->
+    <section id="history" class="history">
+      <h2>📜 History Kiriman</h2>
+      <div id="historyContainer" class="history-container"></div>
+    </section>
+
+    <!-- Admin Panel -->
+    <div class="admin-panel">
+      <button id="adminLogin" class="admin-btn">
+        <i class="fas fa-user-shield"></i>
+        Login Admin
+      </button>
+      <button id="clearHistory" class="admin-btn clear-btn" style="display:none;">
+        <i class="fas fa-trash"></i>
+        Hapus Semua History
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <div class="toast-content">
+      <i class="fas fa-check-circle"></i>
+      <span id="toastMessage">Lagu berhasil dikirim!</span>
+    </div>
+  </div>
+
+  <script src="send.js"></script>
+</body>
+</html>
