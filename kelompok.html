@@ -1,0 +1,3400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ByteBites</title>
+  <link rel="icon" href="assets/logoppl.png" type="image/x-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome & Bootstrap -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <!-- QR Code Library -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+  <style>
+    body, .navbar, .navbar-brand, .navbar .nav-link, .user-btn {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Loading Screen Animation */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #00c3ff, #0072ff);
+      z-index: 99999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+    
+    .loading-screen.fade-out {
+      animation: fadeOut 0.8s ease-out forwards;
+    }
+    
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; visibility: hidden; }
+    }
+    
+    .loading-content {
+      text-align: center;
+      z-index: 10;
+    }
+    
+    .loading-logo {
+      font-size: 3rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 20px;
+      animation: logoBounce 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes logoBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+    
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+      color: white;
+      font-size: 1.2rem;
+      font-weight: 500;
+    }
+    
+    .loading-particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+    }
+    
+    .particle {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    body {
+      background-color: #f8f9fa;
+      background-image: linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px),
+                        linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px);
+      background-size: 30px 30px;
+      scroll-behavior: smooth;
+      transition: background-color .25s ease, color .25s ease;
+      overflow-x: hidden;
+    }
+
+    /* Navbar - More aesthetic with glass effect */
+.navbar {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 195, 255, 0.1);
+  transition: all 0.3s ease;
+  z-index: 1030;
+  border-bottom: 1px solid rgba(0, 195, 255, 0.1);
+}
+
+.navbar.scrolled {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 8px 30px rgba(0, 195, 255, 0.2);
+  border-bottom: 2px solid rgba(0, 195, 255, 0.3);
+}
+
+.navbar-brand {
+  color: #00c3ff;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.navbar-brand::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #00c3ff, #0072ff);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.navbar-brand:hover {
+  transform: translateY(-2px);
+  color: #0072ff;
+}
+
+.navbar-brand:hover::after {
+  width: 100%;
+}
+
+.nav-link {
+  color: #555;
+  font-weight: 500;
+  margin-left: 1rem;
+  position: relative;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.nav-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 195, 255, 0.1), rgba(0, 114, 255, 0.1));
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #00c3ff;
+  transform: translateY(-2px);
+}
+
+.nav-link:hover::before {
+  opacity: 1;
+}
+
+.nav-link.active {
+  color: #00c3ff;
+  background: linear-gradient(135deg, rgba(0, 195, 255, 0.1), rgba(0, 114, 255, 0.1));
+}
+
+    /* Improved Hamburger Menu - FIXED VERSION */
+    .navbar-toggler {
+      border: none;
+      padding: 8px;
+      position: relative;
+      width: 45px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      background: transparent;
+    }
+    
+    .navbar-toggler:hover {
+      background-color: rgba(0, 195, 255, 0.1);
+    }
+    
+    .navbar-toggler:focus {
+      box-shadow: 0 0 0 0.2rem rgba(0, 195, 255, 0.25);
+      outline: none;
+    }
+    
+    .hamburger {
+      width: 26px;
+      height: 20px;
+      position: relative;
+      transform: rotate(0deg);
+      transition: .5s ease-in-out;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    
+    .hamburger span {
+      display: block;
+      position: absolute;
+      height: 3px;
+      width: 100%;
+      background: #00c3ff;
+      border-radius: 3px;
+      opacity: 1;
+      left: 0;
+      transform: rotate(0deg);
+      transition: .25s ease-in-out;
+    }
+    
+    .hamburger span:nth-child(1) {
+      top: 0px;
+      transform-origin: left center;
+    }
+    
+    .hamburger span:nth-child(2) {
+      top: 8px;
+      transform-origin: left center;
+    }
+    
+    .hamburger span:nth-child(3) {
+      top: 16px;
+      transform-origin: left center;
+    }
+    
+    .navbar-toggler.active .hamburger span:nth-child(1) {
+      transform: rotate(45deg);
+      top: -1px;
+      left: 4px;
+    }
+    
+    .navbar-toggler.active .hamburger span:nth-child(2) {
+      width: 0%;
+      opacity: 0;
+    }
+    
+    .navbar-toggler.active .hamburger span:nth-child(3) {
+      transform: rotate(-45deg);
+      top: 17px;
+      left: 4px;
+    }
+
+    .user-btn {
+      background: transparent;
+      border: none;
+      color: #00c3ff;
+      cursor: pointer;
+      font-size: 1.4rem;
+      margin-left: 0.5rem;
+      position: relative;
+    }
+    .user-btn .badge {
+      position: absolute;
+      top: -8px;
+      right: -10px;
+      font-size: 0.7rem;
+    }
+    /* Hero */
+    #home {
+      margin-top: 56px;
+    }
+    .hero-box {
+      max-width: 800px;
+      background: url('https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1350&q=80') center/cover no-repeat;
+      border-radius: 15px;
+      padding: 40px 20px;
+    }
+    .hero-box h1 { font-size: 2.5rem; font-weight: 700; }
+
+    /* Promo banner */
+    .promo-banner {
+      margin-top: 20px;
+      margin-bottom: 14px;
+      background: linear-gradient(90deg,#00c3ff,#006eff);
+      color: #222;
+      padding: 12px;
+      border-radius: 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .promo-banner .promo-text { font-weight:600; }
+    .promo-timer { font-weight:700; }
+
+    /* Order Disabled Banner */
+    .order-disabled-banner {
+      margin-top: 20px;
+      margin-bottom: 14px;
+      background: linear-gradient(90deg,#ff6b6b,#ff8e8e);
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+    }
+    .order-disabled-banner .promo-text { font-weight:600; text-align: center; }
+
+    /* Menu Card */
+    .menu-card {
+      border-radius: 5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+      overflow: hidden;
+      position:relative;
+    }
+    .menu-card:hover { transform: translateY(-5px); box-shadow: 0 0 25px rgba(0,195,255,0.6); }
+    .menu-card img { 
+      height: 200px; 
+      object-fit: cover; 
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    /* Menu Description Tooltip */
+    .menu-img-container {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .menu-description {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 10px;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      font-size: 0.9rem;
+      max-height: 100%;
+      overflow-y: auto;
+    }
+    
+    .menu-img-container:hover .menu-description {
+      transform: translateY(0);
+    }
+
+    .add-btn {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: linear-gradient(135deg, #0072ff, #00c3ff);
+      color: white;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 0 12px rgba(0,195,255,0.7);
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.3s ease;
+    }
+    
+    .add-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(0,195,255,0.9);
+    }
+    
+    .add-btn.adding {
+      animation: addToCart 0.6s ease-out;
+    }
+    
+    @keyframes addToCart {
+      0% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.3) rotate(180deg); }
+      100% { transform: scale(1) rotate(360deg); }
+    }
+
+    /* Rating stars */
+    .rating { display:flex; gap:4px; align-items:center; margin-top:8px; }
+    .rating .fa-star { color: #e3e3e3; cursor:pointer; }
+    .rating .fa-star.checked { color: #ffc107; }
+
+    /* Toast */
+    .toast-container { position: fixed; top: 80px; right: 20px; z-index: 2000; }
+
+    /* Dark mode - More elegant with 3 colors gradient */
+    .dark { background:#0f1724; color:#ffffff; }
+    .dark .navbar { background:#071129; box-shadow: 0 2px 10px rgba(0,0,0,0.6); }
+    .dark .card { background:#0b1220; color:#e6f2ff; box-shadow: 0 2px 10px rgba(0,0,0,0.6); }
+    .dark .hero-box { filter: brightness(.75); }
+    .dark .footer, .dark footer { background: linear-gradient(135deg,#001740,#002134); }
+
+    /* More elegant dark mode with 3 colors gradient */
+    .dark body {
+      background: linear-gradient(135deg, #0a0e27, #1a1f3a, #0f172a) !important;
+      color: #e0e6f0 !important;
+      background-image: none !important;
+      position: relative;
+    }
+    
+.dark body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 40% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 40%),
+    linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.02) 50%, transparent 70%);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 200% 200%;
+  z-index: -1;
+  animation: shimmer 20s ease-in-out infinite, glassShine 8s linear infinite;
+}
+
+@keyframes glassShine {
+  0% { background-position: 0% 0%, 0% 0%, 0% 0%, -200% 0%; }
+  100% { background-position: 0% 0%, 0% 0%, 0% 0%, 200% 0%; }
+}
+
+.dark body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.01) 2px,
+      rgba(255, 255, 255, 0.01) 4px
+    );
+  z-index: -1;
+  pointer-events: none;
+}
+    .dark .card,
+    .dark .modal-content,
+    .dark .form-control,
+    .dark .form-select {
+      background-color: rgba(15, 23, 42, 0.8) !important;
+      color: #e0e6f0 !important;
+      border-color: rgba(59, 130, 246, 0.3) !important;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    .dark .card:hover,
+    .dark .modal-content:hover {
+      box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2) !important;
+      border-color: rgba(59, 130, 246, 0.5) !important;
+    }
+
+    .dark .btn {
+      border-color: rgba(59, 130, 246, 0.3) !important;
+    }
+
+    .dark .promo-banner {
+      background: linear-gradient(90deg, rgba(59, 130, 246, 0.8), rgba(147, 51, 234, 0.8)) !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3) !important;
+    }
+
+    .dark .order-disabled-banner {
+      background: linear-gradient(90deg,rgba(239, 68, 68, 0.8),rgba(248, 113, 113, 0.8)) !important;
+      color: #ffffff !important;
+    }
+
+    .dark .toast {
+      background-color: rgba(15, 23, 42, 0.9) !important;
+      color: #e0e6f0 !important;
+      backdrop-filter: blur(10px);
+    }
+
+    .dark input, 
+    .dark textarea {
+      background-color: rgba(15, 23, 42, 0.8) !important;
+      color: #e0e6f0 !important;
+      border-color: rgba(59, 130, 246, 0.3) !important;
+    }
+
+    .dark .navbar .nav-link,
+    .dark .navbar-brand,
+    .dark footer {
+      color: #ffffff !important;
+    }
+    
+    .dark .navbar {
+      background: rgba(15, 23, 42, 0.9) !important;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    /* Badge Diskon */
+    .discount-badge {
+      position: absolute;
+      top: 10px;
+      left: -5px;
+      background: red;
+      color: white;
+      padding: 5px 12px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      border-radius: 0 5px 5px 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+
+    /* Payment Method Styles */
+    .payment-method-card {
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .payment-method-card:hover {
+      border-color: #00c3ff;
+      box-shadow: 0 0 10px rgba(0, 195, 255, 0.3);
+    }
+    
+    .payment-method-card.selected {
+      border-color: #00c3ff;
+      background-color: rgba(0, 195, 255, 0.1);
+    }
+    
+    .payment-method-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: #00c3ff;
+    }
+    
+    .qr-container {
+      text-align: center;
+      padding: 20px;
+    }
+    
+    #qrcode {
+      display: inline-block;
+      padding: 15px;
+      background: white;
+      border-radius: 8px;
+      margin: 15px 0;
+    }
+    
+    .bank-info {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+    }
+    
+    .copy-btn {
+      background-color: #00c3ff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 10px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .copy-btn:hover {
+      background-color: #0072ff;
+    }
+    
+    .loading-spinner {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .loading-spinner.active {
+      display: block;
+    }
+    
+    .transaction-history {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .transaction-item {
+      border-bottom: 1px solid #e0e0e0;
+      padding: 10px 0;
+    }
+    
+    .transaction-item:last-child {
+      border-bottom: none;
+    }
+    
+    .transaction-status {
+      font-weight: bold;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+    
+    .status-success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    
+    .status-pending {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    
+    .status-failed {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+    /* Admin Panel Styles */
+    .admin-panel {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 9999;
+      overflow-y: auto;
+    }
+    
+    .admin-panel.active {
+      display: block;
+    }
+    
+    .admin-container {
+      background-color: white;
+      margin: 50px auto;
+      max-width: 800px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .admin-header {
+      background: linear-gradient(135deg, #0072ff, #00c3ff);
+      color: white;
+      padding: 20px;
+      border-radius: 15px 15px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .admin-content {
+      padding: 30px;
+    }
+    
+    .admin-section {
+      margin-bottom: 30px;
+    }
+    
+    .admin-section h4 {
+      color: #00c3ff;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 5px;
+    }
+    
+    .form-control, .form-select {
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      padding: 10px 15px;
+      transition: border-color 0.3s;
+    }
+    
+    .form-control:focus, .form-select:focus {
+      border-color: #00c3ff;
+      box-shadow: 0 0 0 0.2rem rgba(0, 195, 255, 0.25);
+    }
+    
+    .btn-admin {
+      background-color: #00c3ff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    
+    .btn-admin:hover {
+      background-color: #0072ff;
+      color: white;
+    }
+    
+    .admin-link {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #00c3ff;
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 12px rgba(0, 195, 255, 0.4);
+      cursor: pointer;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+    
+    .admin-link:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(0, 195, 255, 0.6);
+    }
+
+    /* Transaction Detail Modal */
+    .transaction-detail {
+      padding: 15px;
+    }
+    
+    .transaction-detail h5 {
+      color: #00c3ff;
+      margin-bottom: 15px;
+    }
+    
+    .transaction-detail table {
+      width: 100%;
+      margin-bottom: 15px;
+    }
+    
+    .transaction-detail th, .transaction-detail td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .transaction-detail th {
+      font-weight: 600;
+    }
+    
+    .transaction-detail .total-row {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    
+    .transaction-detail .payment-info {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 15px;
+    }
+    
+    .transaction-detail .payment-info h6 {
+      margin-bottom: 10px;
+      color: #333;
+    }
+    
+    .transaction-detail .payment-info p {
+      margin-bottom: 5px;
+    }
+    
+    .transaction-detail .customer-info {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 15px;
+    }
+    
+    .transaction-detail .customer-info h6 {
+      margin-bottom: 10px;
+      color: #333;
+    }
+    
+    .transaction-detail .customer-info p {
+      margin-bottom: 5px;
+    }
+    
+    .transaction-detail .status-badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    
+    .transaction-detail .status-pending {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    
+    .transaction-detail .status-success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    
+    .transaction-detail .status-failed {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    
+    .transaction-detail .actions {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+    }
+    
+    .transaction-detail .actions .btn {
+      flex: 1;
+    }
+
+    /* Customer Info Section */
+    .customer-info-section {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .customer-info-section h5 {
+      color: #00c3ff;
+      margin-bottom: 15px;
+    }
+    
+    .customer-info-row {
+      display: flex;
+      gap: 15px;
+    }
+    
+    .customer-info-col {
+      flex: 1;
+    }
+
+    /* Order Time Section */
+    .order-time-section {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .order-time-section h5 {
+      color: #00c3ff;
+      margin-bottom: 15px;
+    }
+    
+    .time-input-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .time-input-group .form-control {
+      max-width: 80px;
+    }
+
+    /* Edit Transaction Modal */
+    .edit-item-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+    }
+    
+    .edit-item-row .item-name {
+      flex: 2;
+      font-weight: 600;
+    }
+    
+    .edit-item-row .item-qty {
+      flex: 1;
+      text-align: center;
+    }
+    
+    .edit-item-row .item-price {
+      flex: 1;
+      text-align: center;
+    }
+    
+    .edit-item-row .item-discount {
+      flex: 1;
+      text-align: center;
+    }
+    
+    .edit-item-row .item-total {
+      flex: 1;
+      text-align: right;
+      font-weight: 600;
+    }
+    
+    .edit-item-row .item-action {
+      flex: 0.5;
+      text-align: center;
+    }
+
+    /* WhatsApp Notification Modal */
+    .whatsapp-notification-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 10500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .whatsapp-notification-content {
+      background-color: white;
+      border-radius: 15px;
+      padding: 25px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      animation: slideIn 0.3s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    .whatsapp-notification-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .whatsapp-notification-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #00c3ff;
+      margin: 0;
+    }
+    
+    .whatsapp-notification-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: #999;
+      cursor: pointer;
+    }
+    
+    .whatsapp-notification-body {
+      margin-bottom: 20px;
+    }
+    
+    .whatsapp-notification-message {
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      white-space: pre-line;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .whatsapp-notification-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .whatsapp-notification-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .whatsapp-btn-primary {
+      background-color: #25D366;
+      color: white;
+      border: none;
+    }
+    
+    .whatsapp-btn-primary:hover {
+      background-color: #128C7E;
+    }
+    
+    .whatsapp-btn-secondary {
+      background-color: #f1f1f1;
+      color: #333;
+      border: none;
+    }
+    
+    .whatsapp-btn-secondary:hover {
+      background-color: #e1e1e1;
+    }
+
+    /* Footer - Full width with #00c3ff dominant color */
+    footer {
+      background: linear-gradient(135deg, #00c3ff, #0072ff, #00c3ff);
+      color: white;
+      padding: 60px 0 20px;
+      margin-top: 50px;
+      width: 100vw;
+      margin-left: calc(-50vw + 50%);
+      margin-right: calc(-50vw + 50%);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #00c3ff, #0072ff, #00c3ff);
+      background-size: 200% 100%;
+      animation: gradientMove 3s ease infinite;
+    }
+    
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+  }
+
+  @media (max-width: 767.98px) {
+    .footer-container .row {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .footer-section {
+      margin-bottom: 18px;
+      min-width: 0 !important;
+      font-size: 0.97rem;
+      padding: 0 2px;
+    }
+    .footer-title {
+      font-size: 1.05rem;
+      margin-bottom: 10px;
+      padding-bottom: 4px;
+    }
+    .footer-links li {
+      margin-bottom: 4px;
+    }
+    .footer-contact-item {
+      font-size: 0.97rem;
+      margin-bottom: 4px;
+    }
+    .footer-brand {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+    .footer-desc {
+      margin-bottom: 10px;
+      font-size: 0.97rem;
+    }
+    .footer-bottom {
+      font-size: 0.93rem;
+      padding-top: 8px;
+    }
+    .footer-container .d-flex.flex-lg-row {
+      flex-direction: row !important;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+    .footer-section.flex-fill {
+      flex: 1 1 45%;
+      min-width: 120px;
+      max-width: 100%;
+    }
+  }
+  
+    
+    .footer-section {
+      margin-bottom: 40px;
+    }
+    
+    .footer-brand {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      background: linear-gradient(45deg, #ffffff, #e6f2ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .footer-desc {
+      color: #ffffff;
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+    
+    .footer-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      position: relative;
+      padding-bottom: 10px;
+    }
+    
+    .footer-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(90deg, #ffffff, #e6f2ff);
+      border-radius: 2px;
+    }
+    
+    .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .footer-links li {
+      margin-bottom: 12px;
+    }
+    
+    .footer-links a {
+      color: #ffffff;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      position: relative;
+      padding-left: 0;
+    }
+    
+    .footer-links a:hover {
+      color: #e6f2ff;
+      padding-left: 10px;
+    }
+    
+    .footer-links a::before {
+      content: '→';
+      position: absolute;
+      left: -15px;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+    
+    .footer-links a:hover::before {
+      opacity: 1;
+      left: 0;
+    }
+    
+    .footer-contact-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      color: #ffffff;
+    }
+    
+    .footer-contact-item i {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      margin-right: 15px;
+      color: #ffffff;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .footer-contact-item:hover i {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+    
+    .social-icons {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+    }
+    
+    .social-icon {
+      width: 45px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      color: white;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .social-icon::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+    
+    .social-icon:hover::before {
+      transform: translateY(0);
+    }
+    
+    .social-icon:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .social-icon.facebook {
+      background: linear-gradient(45deg, #1877f2, #0c5ed8);
+    }
+    
+    .social-icon.twitter {
+      background: linear-gradient(45deg, #1da1f2, #0c85d0);
+    }
+    
+    .social-icon.instagram {
+      background: linear-gradient(45deg, #e1306c, #cd86ae, #b43a77, #e1306c, #bcc73d);
+      background-size: 300% 300%;
+      animation: instagramGradient 3s ease infinite;
+    }
+    
+    @keyframes instagramGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .social-icon.whatsapp {
+      background: linear-gradient(45deg, #25d366, #128c7e, #5bc1b5, #25d366);
+      background-size: 300% 300%;
+      animation: whatsappGradient 3s ease infinite;
+    }
+    
+    @keyframes whatsappGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      padding-top: 20px;
+      margin-top: 30px;
+      text-align: center;
+      color: #ffffff;
+    }
+    
+    .footer-bottom p {
+      margin: 0;
+    }
+    
+    .footer-wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg"><path fill="%23ffffff" fill-opacity="0.25" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,213.3C672,224,768,224,864,208C960,192,1056,160,1152,165.3C1248,171,1344,213,1392,234.7L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+  background-size: cover;
+  opacity: 1;
+}
+
+    /* Dark mode toggle button */
+    #darkToggle {
+      background: transparent;
+      border: none;
+      color: #00c3ff;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    #darkToggle:hover {
+      transform: scale(1.1);
+    }
+    
+    .dark #darkToggle {
+      color: #f0e68c;
+    }
+
+    /* Responsive */
+    @media (max-width: 576px) {
+      .row.g-4 > .col-12 { flex: 0 0 50%; max-width: 50%; }
+      .promo-banner { flex-direction:column; align-items:flex-start; }
+      .customer-info-row { flex-direction: column; }
+      .time-input-group { flex-direction: column; align-items: flex-start; }
+      .edit-item-row { flex-direction: column; gap: 10px; }
+      .edit-item-row > div { width: 100%; }
+      
+      .footer-section {
+        margin-bottom: 30px;
+      }
+      
+      .footer-brand {
+        font-size: 1.8rem;
+      }
+      
+      .social-icons {
+        justify-content: center;
+      }
+    }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      25% { transform: translateX(-3px); }
+      50% { transform: translateX(3px); }
+      75% { transform: translateX(-3px); }
+    }
+    .shake { animation: shake 0.4s; }
+
+    /* How To Buy Animasi */
+    .how-step {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease;
+    }
+    .how-step.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Disabled Order */
+    .disabled-order {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+    
+    .disabled-order .add-btn {
+      display: none;
+    }
+
+    /* Coming Soon Badge */
+    .coming-soon-badge {
+      position: absolute;
+      top: 10px;
+      left: -5px;
+      background: #dd4e4e;
+      color: white;
+      padding: 5px 12px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      border-radius: 0 5px 5px 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- Loading Screen -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="loading-particles" id="loadingParticles"></div>
+  <div class="loading-content">
+    <div class="loading-logo">ByteBites</div>
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Memuat...</div>
+  </div>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container d-flex justify-content-between align-items-center">
+    <a class="navbar-brand" href="#home">ByteBites</a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto me-3">
+        <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#spesial">Spesial</a></li>
+        <li class="nav-item"><a class="nav-link" href="#combo">Combo</a></li>
+        <li class="nav-item"><a class="nav-link" href="#reguler">Reguler</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="#howtobuy">How To Buy</a></li>
+        <li class="nav-item"><a class="nav-link" href="#transactions">Riwayat</a></li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://cheerjuu.github.io/wep-kelas/" target="_blank">
+            <i class="fas fa-home"></i> Kembali
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="d-flex align-items-center">
+      <!-- Dark mode toggle (added, non-invasive) -->
+      <button id="darkToggle" class="btn btn-sm me-2" title="Toggle dark mode">
+        <i class="fas fa-moon" id="darkModeIcon"></i>
+      </button>
+
+      <button class="navbar-toggler me-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </button>
+      <button class="user-btn" data-bs-toggle="modal" data-bs-target="#cartModal">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="badge bg-danger" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section id="home" class="d-flex align-items-center justify-content-center py-5">
+  <div class="container">
+    <div class="hero-box text-center text-white p-4 shadow-lg mx-auto">
+      <h1>Selamat Datang di ByteBites</h1>
+      <p>Temukan minuman favoritmu, dari spesial hingga reguler.</p>
+      <a href="#spesial" class="btn btn-primary">Lihat Menu</a>
+    </div>
+  </div>
+</section>
+
+<!-- Order Disabled Banner (hidden by default) -->
+<div class="container" id="orderDisabledBanner" style="display: none;">
+  <div class="order-disabled-banner">
+    <div class="promo-text">
+      <i class="fas fa-exclamation-triangle me-2"></i> Maaf, pemesanan sedang ditutup sementara. Silakan coba lagi nanti.
+    </div>
+  </div>
+</div>
+
+<!-- Promo banner (added) -->
+<div class="container">
+  <div class="promo-banner" id="promoBanner">
+    <div class="promo-text">
+      🎉 Promo Hari Ini: Diskon 10% untuk semua menu!
+    </div>
+    <div>
+      <span class="promo-timer" id="promoTimer">--:--:--</span>
+      <button class="btn btn-sm btn-light ms-2" id="promoClose">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- Search -->
+<div class="container mt-3 pt-2">
+  <form class="d-flex justify-content-center" role="search" onsubmit="return false;">
+    <input id="searchInput" class="form-control me-2 w-50" type="search" placeholder="Cari menu...">
+    <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i></button>
+  </form>
+</div>
+
+<!-- Menu -->
+<div class="container mt-4" id="menuContainer">
+  <h2 id="spesial" class="mt-5 mb-3">Menu Spesial</h2>
+  <div class="row g-4">
+    <div class="col-12 col-sm-6 col-md-4">
+      <div class="card menu-card position-relative">
+        <span class="discount-badge">-20%</span>
+        <div class="menu-img-container">
+          <img src="assets/cheesroll.jpeg" class="card-img-top menu-img" data-name="Latte Art" data-price="36000" data-desc="Minuman kopi dengan latte art yang cantik dan lezat. Dibuat dari biji kopi pilihan yang dipanggang sempurna dan disajikan dengan susu segar.">
+          <div class="menu-description">Minuman kopi dengan latte art yang cantik dan lezat. Dibuat dari biji kopi pilihan yang dipanggang sempurna dan disajikan dengan susu segar.</div>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Cheseeroll</h5>
+          <p class="card-text"><del>Rp 1.500</del> Rp 1.000</p>
+          <div class="rating" data-product="Latte Art">
+            <i class="fa-regular fa-star" data-star="1"></i>
+            <i class="fa-regular fa-star" data-star="2"></i>
+            <i class="fa-regular fa-star" data-star="3"></i>
+            <i class="fa-regular fa-star" data-star="4"></i>
+            <i class="fa-regular fa-star" data-star="5"></i>
+          </div>
+          <button class="add-btn" data-name="Cheseeroll" data-price="1000">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 id="combo" class="mt-5 mb-3">Coming Soon</h2>
+  <div class="row g-4">
+    <div class="col-12 col-sm-6 col-md-4">
+      <div class="card menu-card position-relative">
+        <span class="coming-soon-badge">Coming Soon</span>
+        <div class="menu-img-container">
+          <img src="assets/piscok.jpeg" class="card-img-top menu-img" data-name="Pisang Coklat" data-price="2000" data-desc="Pisang goreng dengan taburan coklat lezat. Nikmati kombinasi manis dan gurih dari pisang goreng yang renyah dengan coklat yang meleleh.">
+          <div class="menu-description">Pisang goreng dengan taburan coklat lezat. Nikmati kombinasi manis dan gurih dari pisang goreng yang renyah dengan coklat yang meleleh.</div>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Pisang Coklat</h5>
+          <p class="card-text"><del>Rp 3.000</del> Rp 2.000</p>
+          <div class="rating" data-product="Pisang Coklat">
+            <i class="fa-regular fa-star" data-star="1"></i>
+            <i class="fa-regular fa-star" data-star="2"></i>
+            <i class="fa-regular fa-star" data-star="3"></i>
+            <i class="fa-regular fa-star" data-star="4"></i>
+            <i class="fa-regular fa-star" data-star="5"></i>
+          </div>
+          <button class="add-btn" data-name="Pisang Coklat" data-price="2000">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4">
+      <div class="card menu-card position-relative">
+        <span class="coming-soon-badge">Coming Soon</span>
+        <div class="menu-img-container">
+          <img src="assets/sogem.jpeg" class="card-img-top menu-img" data-name="Soda Gembira" data-price="15000" data-desc="Minuman soda segar dengan berbagai rasa buah. Perpaduan sempurna antara soda, sirup, dan es batu untuk menyegarkan harimu.">
+          <div class="menu-description">Minuman soda segar dengan berbagai rasa buah. Perpaduan sempurna antara soda, sirup, dan es batu untuk menyegarkan harimu.</div>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Soda Gembira</h5>
+          <p class="card-text">Rp 15.000</p>
+          <div class="rating" data-product="Soda Gembira">
+            <i class="fa-regular fa-star" data-star="1"></i>
+            <i class="fa-regular fa-star" data-star="2"></i>
+            <i class="fa-regular fa-star" data-star="3"></i>
+            <i class="fa-regular fa-star" data-star="4"></i>
+            <i class="fa-regular fa-star" data-star="5"></i>
+          </div>
+          <button class="add-btn" data-name="Soda Gembira" data-price="15000">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 id="reguler" class="mt-5 mb-3">Menu Reguler</h2>
+  <!-- <div class="row g-4">
+    <div class="col-12 col-sm-6 col-md-4">
+      <div class="card menu-card position-relative">
+        <div class="menu-img-container">
+          <img src="https://via.placeholder.com/300x200" class="card-img-top menu-img" data-name="Americano" data-price="30000" data-desc="Kopi hitam tanpa gula. Dibuat dengan ekstraksi sempurna untuk menghasilkan rasa kopi yang kaya dan aromatik.">
+          <div class="menu-description">Kopi hitam tanpa gula. Dibuat dengan ekstraksi sempurna untuk menghasilkan rasa kopi yang kaya dan aromatik.</div>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Americano</h5>
+          <p class="card-text">Rp 30.000</p>
+          <div class="rating" data-product="Americano">
+            <i class="fa-regular fa-star" data-star="1"></i>
+            <i class="fa-regular fa-star" data-star="2"></i>
+            <i class="fa-regular fa-star" data-star="3"></i>
+            <i class="fa-regular fa-star" data-star="4"></i>
+            <i class="fa-regular fa-star" data-star="5"></i>
+          </div>
+          <button class="add-btn" data-name="Americano" data-price="30000">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-4">
+      <div class="card menu-card position-relative">
+        <div class="menu-img-container">
+          <img src="https://via.placeholder.com/300x200" class="card-img-top menu-img" data-name="Cappuccino" data-price="35000" data-desc="Kopi dengan susu dan busa. Perpaduan sempurna antara espresso, susu steamed, dan busa susu yang lembut.">
+           <div class="menu-description">Kopi dengan susu dan busa. Perpaduan sempurna antara espresso, susu steamed, dan busa susu yang lembut.</div>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Cappuccino</h5>
+          <p class="card-text">Rp 35.000</p>
+          <div class="rating" data-product="Cappuccino">
+            <i class="fa-regular fa-star" data-star="1"></i>
+            <i class="fa-regular fa-star" data-star="2"></i>
+            <i class="fa-regular fa-star" data-star="3"></i>
+            <i class="fa-regular fa-star" data-star="4"></i>
+            <i class="fa-regular fa-star" data-star="5"></i>
+          </div>
+          <button class="add-btn" data-name="Cappuccino" data-price="35000">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- Cart Modal -->
+<div class="modal fade" id="cartModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title">Keranjang Belanja</h5></div>
+      <div class="modal-body">
+        <div class="customer-info-section">
+          <h5>Informasi Pembeli</h5>
+          <div class="customer-info-row">
+            <div class="customer-info-col">
+              <label for="cartNama" class="form-label">Nama</label>
+              <input type="text" class="form-control" id="cartNama" placeholder="Masukkan nama Anda">
+            </div>
+            <div class="customer-info-col">
+              <label for="cartKelas" class="form-label">Kelas</label>
+              <input type="text" class="form-control" id="cartKelas" placeholder="Masukkan kelas Anda">
+            </div>
+          </div>
+        </div>
+        
+        <div class="order-time-section">
+          <h5>Jam Pengantaran</h5>
+          <div class="time-input-group">
+            <label class="form-label">Jam:</label>
+            <select class="form-select" id="orderHour">
+              <option value="07">07</option>
+              <option value="08">08</option>
+              <option value="09">09</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+              <option value="13">13</option>
+              <option value="14">14</option>
+              <option value="15">15</option>
+              <option value="16">16</option>
+              <option value="17">17</option>
+            </select>
+            <span>:</span>
+            <select class="form-select" id="orderMinute">
+              <option value="00">00</option>
+              <option value="15">15</option>
+              <option value="30">30</option>
+              <option value="45">45</option>
+            </select>
+          </div>
+        </div>
+        
+        <table class="table">
+          <thead><tr><th>Item</th><th>Qty</th><th>Harga</th><th>Total</th><th></th></tr></thead>
+          <tbody id="cartTable"></tbody>
+        </table>
+        <h5 class="text-end">Grand Total: Rp <span id="grandTotal">0</span></h5>
+        <div class="mt-3">
+          <label for="paymentMethod" class="form-label">Metode Pembayaran:</label>
+          <div class="payment-methods">
+            <div class="payment-method-card" data-payment="qris">
+              <div class="payment-method-icon"><i class="fas fa-qrcode"></i></div>
+              <div class="payment-method-title">QRIS</div>
+              <div class="payment-method-desc">Scan QR Code untuk pembayaran</div>
+            </div>
+            <div class="payment-method-card" data-payment="dana">
+              <div class="payment-method-icon"><i class="fas fa-wallet"></i></div>
+              <div class="payment-method-title">Dana</div>
+              <div class="payment-method-desc">Pembayaran melalui aplikasi Dana</div>
+            </div>
+            <div class="payment-method-card" data-payment="transfer">
+              <div class="payment-method-icon"><i class="fas fa-university"></i></div>
+              <div class="payment-method-title">Transfer Bank</div>
+              <div class="payment-method-desc">Transfer ke rekening bank</div>
+            </div>
+            <div class="payment-method-card" data-payment="cod">
+              <div class="payment-method-icon"><i class="fas fa-money-bill-wave"></i></div>
+              <div class="payment-method-title">COD</div>
+              <div class="payment-method-desc">Bayar di tempat saat pengiriman</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+        <button class="btn btn-primary" id="checkoutBtn">Bayar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title">Konfirmasi Pembayaran</h5></div>
+      <div class="modal-body" id="orderDetails"></div>
+      <div class="modal-footer">
+        <div class="me-auto">
+          <!-- small inputs for Nama & Kelas (non-invasive, optional) -->
+          <input id="checkoutNama" class="form-control form-control-sm mb-1" placeholder="Nama (opsional)">
+          <input id="checkoutKelas" class="form-control form-control-sm" placeholder="Kelas (opsional)">
+        </div>
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <button class="btn btn-success" id="confirmPayBtn">Konfirmasi Bayar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Payment Detail Modal -->
+<div class="modal fade" id="paymentDetailModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="paymentModalTitle">Detail Pembayaran</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="paymentDetailContent">
+        <!-- Content will be dynamically generated based on payment method -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-primary" id="processPaymentBtn">Proses Pembayaran</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Section Testimoni -->
+<div class="container my-5" id="testimoni">
+  <h2 class="text-center mb-4">Testimoni Pelanggan</h2>
+  <div class="text-center mb-3">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#testimoniModal">
+      + Tambah Testimoni
+    </button>
+  </div>
+  <div id="testimoniList" class="row g-4">
+    <!-- Testimoni otomatis muncul di sini -->
+  </div>
+</div>
+
+<!-- Modal Form Testimoni -->
+<div class="modal fade" id="testimoniModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title">Tambah Testimoni</h5></div>
+      <div class="modal-body">
+        <form id="testimoniForm">
+          <div class="mb-3">
+            <label class="form-label">Nama</label>
+            <input type="text" class="form-control" id="namaTesti" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Pesan</label>
+            <textarea class="form-control" id="pesanTesti" rows="3" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Foto</label>
+            <input type="file" class="form-control" id="fotoTesti" accept="image/*">
+          </div>
+          <button type="submit" class="btn btn-success">Kirim</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- How To Buy -->
+<div class="container my-5" id="howtobuy">
+  <h2 class="text-center mb-4">How To Buy</h2>
+  <div class="row g-4 text-center">
+    <div class="col-6 col-md-3">
+      <div class="p-3 border rounded shadow-sm h-100 how-step">
+        <i class="fas fa-search fs-2 text-primary mb-2"></i>
+        <h6>Pilih Menu</h6>
+        <p class="small">Cari dan pilih menu favoritmu dari kategori Spesial, Combo, atau Reguler.</p>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="p-3 border rounded shadow-sm h-100 how-step">
+        <i class="fas fa-cart-plus fs-2 text-success mb-2"></i>
+        <h6>Tambah ke Keranjang</h6>
+        <p class="small">Klik tombol + untuk memasukkan produk ke keranjang belanja.</p>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="p-3 border rounded shadow-sm h-100 how-step">
+        <i class="fas fa-credit-card fs-2 text-warning mb-2"></i>
+        <h6>Pilih Pembayaran</h6>
+        <p class="small">Lanjut ke checkout dan pilih metode pembayaran yang kamu inginkan.</p>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="p-3 border rounded shadow-sm h-100 how-step">
+        <i class="fas fa-smile fs-2 text-danger mb-2"></i>
+        <h6>Nikmati Pesananmu</h6>
+        <p class="small">Selesaikan pembayaran, lalu tunggu pesananmu sampai dan nikmati!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Transaction History Section -->
+<div class="container my-5" id="transactions">
+  <h2 class="text-center mb-4">Riwayat Transaksi</h2>
+  <div class="card">
+    <div class="card-body">
+      <div class="transaction-history" id="transactionHistory">
+        <!-- Transaction history will be loaded here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Transaction Detail Modal -->
+<div class="modal fade" id="transactionDetailModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Detail Transaksi</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="transactionDetailContent">
+        <!-- Transaction details will be loaded here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Transaction Modal -->
+<div class="modal fade" id="editTransactionModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Transaksi</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="editTransactionContent">
+        <!-- Edit form will be loaded here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-primary" id="saveTransactionBtn">Simpan Perubahan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer - Full width with #00c3ff dominant color -->
+<footer class="text-white pt-5 pb-4" id="mainFooter">
+  <div class="footer-container">
+    <div class="row">
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="footer-section">
+          <h3 class="footer-brand" id="footerBrand">ByteBites</h3>
+          <p class="footer-desc" id="footerDesc">Nikmati minuman favoritmu dengan kemudahan belanja online. Spesial, combo, atau reguler, semua ada di sini.</p>
+          <div class="social-icons">
+            <a href="#" id="footerFb" class="social-icon facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" id="footerTwitter" class="social-icon twitter"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.instagram.com/11ppl2.js" id="adminIg" class="social-icon instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" id="adminWa" class="social-icon whatsapp"><i class="fab fa-whatsapp"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8 col-md-12 mb-4 d-flex flex-column flex-lg-row justify-content-between align-items-start">
+        <div class="footer-section flex-fill me-lg-5" style="min-width:180px;">
+          <h5 class="footer-title">Menu</h5>
+          <ul class="footer-links">
+            <li><a href="#spesial">Spesial</a></li>
+            <li><a href="#combo">Combo</a></li>
+            <li><a href="#reguler">Reguler</a></li>
+          </ul>
+        </div>
+        <div class="footer-section flex-fill" id="contact" style="min-width:220px;">
+          <h5 class="footer-title">Kontak</h5>
+          <div class="footer-contact-item"><i class="fas fa-map-marker-alt"></i> <span id="footerAddress">SMKN 1 Garut, Jl. Otto Iskandardinata No.71, Kota Garut, Jawa Barat 44151</span></div>
+          <div class="footer-contact-item"><i class="fas fa-phone"></i> <span id="footerPhone">+62 853 2000 2950</span></div>
+          <div class="footer-contact-item"><i class="fas fa-envelope"></i> <span id="footerEmail">info@bytebites.com</span></div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 mb-4" id="about">
+        <div class="footer-section">
+          <h5 class="footer-title">Tentang Kami</h5>
+          <p class="footer-desc" id="footerAbout">ByteBites hadir untuk menghadirkan pengalaman minum kopi yang menyenangkan dengan berbagai pilihan menu spesial hingga reguler.</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="small mb-0">© <span id="footerYear">2024</span> <span id="footerCompanyName">ByteBites</span>. All Rights Reserved.</p>
+    </div>
+  </div>
+  <div class="footer-wave"></div>
+</footer>
+
+<!-- Admin Panel -->
+<div class="admin-panel" id="adminPanel">
+  <div class="admin-container">
+    <div class="admin-header">
+      <h3 class="mb-0">Admin Panel</h3>
+      <button class="btn btn-light btn-sm" onclick="closeAdminPanel()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="admin-content">
+      <!-- Login Form -->
+      <div id="adminLogin">
+        <h4 class="text-center mb-4">Login Admin</h4>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-control" id="adminPassword" placeholder="Masukkan password">
+        </div>
+        <button class="btn btn-admin w-100" onclick="adminLogin()">Login</button>
+        <p class="text-muted small mt-2 text-center">Default password: admin123</p>
+      </div>
+      
+      <!-- Admin Dashboard -->
+      <div id="adminDashboard" style="display: none;">
+        <h4 class="mb-4">Panel Admin</h4>
+        
+        <ul class="nav nav-tabs" id="adminTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="footer-tab" data-bs-toggle="tab" data-bs-target="#footer-tab-pane" type="button">Konten Footer</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="transactions-tab" data-bs-toggle="tab" data-bs-target="#transactions-tab-pane" type="button">Kelola Transaksi</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings-tab-pane" type="button">Pengaturan</button>
+          </li>
+        </ul>
+        
+        <div class="tab-content mt-3" id="adminTabContent">
+          <!-- Tab Konten Footer -->
+          <div class="tab-pane fade show active" id="footer-tab-pane" role="tabpanel">
+            <div class="admin-section">
+              <h4>Informasi Perusahaan</h4>
+              <div class="form-group">
+                <label class="form-label">Nama Perusahaan</label>
+                <input type="text" class="form-control" id="adminBrand" placeholder="Nama Perusahaan">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Deskripsi</label>
+                <textarea class="form-control" id="adminDesc" rows="3" placeholder="Deskripsi perusahaan"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Tentang Kami</label>
+                <textarea class="form-control" id="adminAbout" rows="3" placeholder="Tentang kami"></textarea>
+              </div>
+            </div>
+            
+            <div class="admin-section">
+              <h4>Kontak</h4>
+              <div class="form-group">
+                <label class="form-label">Alamat</label>
+                <input type="text" class="form-control" id="adminAddress" placeholder="Alamat lengkap">
+              </div>
+              <div class="form-group">
+                <label class="form-label">No. Telepon</label>
+                <input type="text" class="form-control" id="adminPhone" placeholder="No. telepon">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" id="adminEmail" placeholder="Email perusahaan">
+              </div>
+            </div>
+            
+            <div class="admin-section">
+              <h4>Sosial Media</h4>
+              <div class="form-group">
+                <label class="form-label">Facebook</label>
+                <input type="url" class="form-control" id="adminFb" placeholder="URL Facebook">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Twitter</label>
+                <input type="url" class="form-control" id="adminTwitter" placeholder="URL Twitter">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Instagram</label>
+                <input type="url" class="form-control" id="adminIg" placeholder="URL Instagram">
+              </div>
+              <div class="form-group">
+                <label class="form-label">WhatsApp</label>
+                <input type="url" class="form-control" id="adminWa" placeholder="URL WhatsApp">
+              </div>
+            </div>
+            
+            <div class="admin-section">
+              <h4>Pengaturan Lain</h4>
+              <div class="form-group">
+                <label class="form-label">Tahun Copyright</label>
+                <input type="number" class="form-control" id="adminYear" placeholder="Tahun">
+              </div>
+            </div>
+            
+            <div class="d-flex gap-2">
+              <button class="btn btn-admin" onclick="saveFooterContent()">Simpan Perubahan</button>
+              <button class="btn btn-secondary" onclick="resetFooterContent()">Reset</button>
+            </div>
+          </div>
+          
+          <!-- Tab Kelola Transaksi -->
+          <div class="tab-pane fade" id="transactions-tab-pane" role="tabpanel">
+            <div class="admin-section">
+              <h4>Daftar Transaksi</h4>
+              <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Tanggal</th>
+                      <th>Pelanggan</th>
+                      <th>Total</th>
+                      <th>Metode Pembayaran</th>
+                      <th>Status</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminTransactionsList">
+                    <!-- Transaksi akan dimuat di sini -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Tab Pengaturan -->
+          <div class="tab-pane fade" id="settings-tab-pane" role="tabpanel">
+            <div class="admin-section">
+              <h4>Pengaturan Pemesanan</h4>
+              <div class="form-group">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="orderEnabled" checked>
+                  <label class="form-check-label" for="orderEnabled">
+                    Aktifkan Pemesanan
+                  </label>
+                </div>
+                <small class="text-muted">Matikan jika ingin menutup sementara pemesanan</small>
+              </div>
+            </div>
+            
+            <div class="admin-section">
+              <h4>Pengaturan Jam Operasional</h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label">Jam Buka</label>
+                    <select class="form-select" id="openHour">
+                      <option value="07">07:00</option>
+                      <option value="08">08:00</option>
+                      <option value="09">09:00</option>
+                      <option value="10">10:00</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label">Jam Tutup</label>
+                    <select class="form-select" id="closeHour">
+                      <option value="15">15:00</option>
+                      <option value="16">16:00</option>
+                      <option value="17">17:00</option>
+                      <option value="18">18:00</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="admin-section">
+              <h4>Pengaturan Diskon</h4>
+              <div class="form-group">
+                <label class="form-label">Diskon Global (%)</label>
+                <input type="number" class="form-control" id="globalDiscount" min="0" max="100" value="0">
+                <small class="text-muted">Diskon akan diterapkan ke semua produk</small>
+              </div>
+            </div>
+            
+            <div class="admin-section">
+              <h4>Notifikasi WhatsApp (Tanpa API)</h4>
+              <div class="form-group">
+                <label class="form-label">Nomor WhatsApp Penjual</label>
+                <input type="text" class="form-control" id="adminWaNumber" placeholder="628xxxxxxxxxx">
+                <small class="text-muted">Format: 628xxxxxxxxxx (tanpa + atau 0 di depan)</small>
+              </div>
+              <div class="form-group">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="waNotificationEnabled">
+                  <label class="form-check-label" for="waNotificationEnabled">
+                    Aktifkan Notifikasi WhatsApp
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Mode Notifikasi</label>
+                <select class="form-select" id="waNotificationMode">
+                  <option value="popup">Buka WhatsApp (Popup)</option>
+                  <option value="link">Tampilkan Link WhatsApp</option>
+                  <option value="both">Popup + Link</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="d-flex gap-2">
+              <button class="btn btn-admin" onclick="saveSettings()">Simpan Pengaturan</button>
+              <button class="btn btn-secondary" onclick="resetSettings()">Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Link -->
+<div class="admin-link" onclick="openAdminPanel()" title="Admin Panel">
+  <i class="fas fa-cog"></i>
+</div>
+
+<!-- WhatsApp Notification Modal -->
+<div id="whatsappNotificationModal" class="whatsapp-notification-modal" style="display: none;">
+  <div class="whatsapp-notification-content">
+    <div class="whatsapp-notification-header">
+      <h3 class="whatsapp-notification-title">Notifikasi WhatsApp</h3>
+      <button class="whatsapp-notification-close" onclick="closeWhatsAppNotificationModal()">&times;</button>
+    </div>
+    <div class="whatsapp-notification-body">
+      <div class="alert alert-success">
+        <i class="fas fa-check-circle me-2"></i>
+        <strong>Pesanan baru diterima!</strong>
+      </div>
+      <div class="whatsapp-notification-message" id="whatsappNotificationMessage">
+        <!-- Pesan notifikasi akan ditampilkan di sini -->
+      </div>
+    </div>
+    <div class="whatsapp-notification-actions">
+      <a id="whatsappNotificationLink" target="_blank" class="whatsapp-notification-btn whatsapp-btn-primary">
+        <i class="fab fa-whatsapp me-2"></i> Buka WhatsApp
+      </a>
+      <button onclick="copyWhatsAppLink()" class="whatsapp-notification-btn whatsapp-btn-secondary">
+        <i class="fas fa-copy me-2"></i> Salin Link
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Loading Screen Animation
+  window.addEventListener('load', function() {
+    // Create particles
+    const particlesContainer = document.getElementById('loadingParticles');
+    for (let i = 0; i < 20; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.width = Math.random() * 10 + 5 + 'px';
+      particle.style.height = particle.style.width;
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.top = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 3 + 's';
+      particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+      particlesContainer.appendChild(particle);
+    }
+    
+    // Hide loading screen after content is loaded
+    setTimeout(() => {
+      const loadingScreen = document.getElementById('loadingScreen');
+      loadingScreen.classList.add('fade-out');
+      setTimeout(() => {
+        loadingScreen.style.display = 'none';
+      }, 800);
+    }, 2000);
+  });
+
+  // ================ ORIGINAL SCRIPTS (keutuhan tidak diubah) ================
+  // Navbar scroll
+  window.addEventListener("scroll", () => {
+    document.querySelector(".navbar").classList.toggle("scrolled", window.scrollY > 50);
+  });
+
+  // Cart
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  function updateCart() {
+    const cartCount = document.getElementById("cartCount");
+    const cartTable = document.getElementById("cartTable");
+    const grandTotal = document.getElementById("grandTotal");
+    cartCount.textContent = cart.reduce((a,b) => a+b.qty, 0);
+    cartTable.innerHTML = "";
+    let total = 0;
+    cart.forEach((item,i) => {
+      const row = `<tr>
+        <td>${item.name}</td>
+        <td><input type="number" value="${item.qty}" min="1" class="form-control form-control-sm w-50" onchange="changeQty(${i}, this.value)"></td>
+        <td>Rp ${item.price.toLocaleString()}</td>
+        <td>Rp ${(item.qty*item.price).toLocaleString()}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="removeItem(${i})">Hapus</button></td>
+      </tr>`;
+      cartTable.innerHTML += row;
+      total += item.qty*item.price;
+    });
+    grandTotal.textContent = total.toLocaleString();
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }
+  function addToCart(name, price) {
+    const item = cart.find(i => i.name===name);
+    if(item) item.qty++; else cart.push({name, price: parseInt(price), qty:1});
+    updateCart();
+    document.getElementById("cartCount").classList.add("shake");
+    setTimeout(()=>document.getElementById("cartCount").classList.remove("shake"), 400);
+  }
+  function removeItem(i){ cart.splice(i,1); updateCart(); }
+  function changeQty(i, qty){ cart[i].qty=parseInt(qty); updateCart(); }
+  document.querySelectorAll(".add-btn").forEach(btn=>btn.addEventListener("click", function(){
+    // Add animation class
+    this.classList.add('adding');
+    
+    // Add to cart
+    addToCart(this.dataset.name, this.dataset.price);
+    
+    // Remove animation class after animation completes
+    setTimeout(() => {
+      this.classList.remove('adding');
+    }, 600);
+    
+    // Show toast
+    setTimeout(()=>{
+      showToast(`"${this.dataset.name}" ditambahkan ke keranjang.`);
+    }, 100);
+  }));
+  updateCart();
+
+  // Search
+  document.getElementById("searchInput").addEventListener("input", e=>{
+    const q=e.target.value.toLowerCase();
+    document.querySelectorAll("#menuContainer .card").forEach(card=>{
+      const name=card.querySelector(".card-title").textContent.toLowerCase();
+      card.parentElement.style.display=name.includes(q)?"":"none";
+    });
+  });
+
+  // Testimoni
+  let testimonies = JSON.parse(localStorage.getItem("testimonies")) || [];
+  function renderTestimoni(){
+    const list=document.getElementById("testimoniList"); list.innerHTML="";
+    testimonies.forEach((t,i)=>{
+      const col=document.createElement("div");
+      col.className="col-12 col-md-4";
+      col.innerHTML=`<div class="card h-100 shadow-sm">
+        ${t.foto ? `<img src="${t.foto}" class="card-img-top" style="height:200px;object-fit:cover;">` : ""}
+        <div class="card-body">
+          <h5 class="card-title">${t.nama}</h5>
+          <p class="card-text">${t.pesan}</p>
+        </div>
+      </div>`;
+      list.appendChild(col);
+    });
+  }
+  renderTestimoni();
+
+  document.getElementById("testimoniForm").addEventListener("submit", e=>{
+    e.preventDefault();
+    const nama=document.getElementById("namaTesti").value;
+    const pesan=document.getElementById("pesanTesti").value;
+    const fotoInput=document.getElementById("fotoTesti");
+    let fotoURL="";
+    if(fotoInput.files && fotoInput.files[0]){
+      const reader=new FileReader();
+      reader.onload=ev=>{
+        fotoURL=ev.target.result;
+        testimonies.push({nama,pesan,foto:fotoURL});
+        localStorage.setItem("testimonies", JSON.stringify(testimonies));
+        renderTestimoni();
+        e.target.reset();
+        bootstrap.Modal.getInstance(document.getElementById("testimoniModal")).hide();
+      };
+      reader.readAsDataURL(fotoInput.files[0]);
+    } else {
+      testimonies.push({nama,pesan,foto:""});
+      localStorage.setItem("testimonies", JSON.stringify(testimonies));
+      renderTestimoni();
+      e.target.reset();
+      bootstrap.Modal.getInstance(document.getElementById("testimoniModal")).hide();
+    }
+  });
+
+  // Animasi How To Buy
+  document.addEventListener("scroll", () => {
+    document.querySelectorAll(".how-step").forEach((step, i) => {
+      const rect = step.getBoundingClientRect();
+      if(rect.top < window.innerHeight - 50){
+        setTimeout(() => step.classList.add("show"), i*200);
+      }
+    });
+  });
+
+  // ================ ADDED FEATURES (non-destructive) ================
+  // 1) Toast helper
+  function showToast(message, title = "Info"){
+    const id = 't'+Date.now();
+    const toastHtml = `
+      <div id="${id}" class="toast align-items-center text-bg-light border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body">${message}</div>
+          <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>`;
+    const container = document.getElementById('toastContainer');
+    container.insertAdjacentHTML('beforeend', toastHtml);
+    const toastEl = document.getElementById(id);
+    const bsToast = new bootstrap.Toast(toastEl, {delay: 3000});
+    bsToast.show();
+    toastEl.addEventListener('hidden.bs.toast', ()=> toastEl.remove());
+  }
+
+  // 3) Rating system stored in localStorage
+  function loadRatings(){
+    const ratings = JSON.parse(localStorage.getItem('bb_ratings')||'{}');
+    document.querySelectorAll('.rating').forEach(rDiv=>{
+      const prod = rDiv.dataset.product;
+      const value = ratings[prod] || 0;
+      Array.from(rDiv.querySelectorAll('.fa-star')).forEach(star=>{
+        const s = parseInt(star.dataset.star);
+        star.classList.toggle('checked', s <= value);
+        star.classList.toggle('fa-solid', s <= value);
+        star.classList.toggle('fa-regular', s > value);
+      });
+    });
+  }
+  function saveRating(product, value){
+    const ratings = JSON.parse(localStorage.getItem('bb_ratings')||'{}');
+    ratings[product] = value;
+    localStorage.setItem('bb_ratings', JSON.stringify(ratings));
+    showToast(`Terima kasih! Anda memberi rating ${value} ★ untuk "${product}"`);
+  }
+  document.querySelectorAll('.rating .fa-star').forEach(star=>{
+    star.addEventListener('click', (e)=>{
+      const parent = star.closest('.rating');
+      const prod = parent.dataset.product;
+      const val = parseInt(star.dataset.star);
+      // set style immediately
+      Array.from(parent.querySelectorAll('.fa-star')).forEach(s=>{
+        const sVal = parseInt(s.dataset.star);
+        s.classList.toggle('checked', sVal <= val);
+        s.classList.toggle('fa-solid', sVal <= val);
+        s.classList.toggle('fa-regular', sVal > val);
+      });
+      saveRating(prod, val);
+    });
+    star.addEventListener('mouseover', (e)=>{
+      const parent = star.closest('.rating');
+      const val = parseInt(star.dataset.star);
+      Array.from(parent.querySelectorAll('.fa-star')).forEach(s=>{
+        const sVal = parseInt(s.dataset.star);
+        s.classList.toggle('fa-solid', sVal <= val);
+      });
+    });
+    star.addEventListener('mouseout', (e)=> loadRatings());
+  });
+  loadRatings();
+
+  // 4) Promo countdown: set promo end 6 hours from now (you can change)
+  (function promoCountdown(){
+    const end = new Date(Date.now() + 1000*60*60*6); // 6 hours
+    const timerEl = document.getElementById('promoTimer');
+    const banner = document.getElementById('promoBanner');
+    const closeBtn = document.getElementById('promoClose');
+    const tick = () => {
+      const now = new Date();
+      let diff = Math.max(0, end - now);
+      const h = String(Math.floor(diff/3600000)).padStart(2,'0');
+      diff %= 3600000;
+      const m = String(Math.floor(diff/60000)).padStart(2,'0');
+      diff %= 60000;
+      const s = String(Math.floor(diff/1000)).padStart(2,'0');
+      timerEl.textContent = `${h}:${m}:${s}`;
+      if(end - now <= 0){
+        banner.style.display = 'none';
+        clearInterval(iv);
+      }
+    };
+    const iv = setInterval(tick, 1000);
+    tick();
+    closeBtn.addEventListener('click', ()=> banner.style.display='none');
+  })();
+
+  // 5) Dark mode toggle and persistence
+  const darkToggle = document.getElementById('darkToggle');
+  const darkModeIcon = document.getElementById('darkModeIcon');
+  
+  function applyDarkMode(enabled){
+    if(enabled) {
+      document.documentElement.classList.add('dark');
+      darkModeIcon.classList.remove('fa-moon');
+      darkModeIcon.classList.add('fa-sun');
+    } else {
+      document.documentElement.classList.remove('dark');
+      darkModeIcon.classList.remove('fa-sun');
+      darkModeIcon.classList.add('fa-moon');
+    }
+    localStorage.setItem('bb_dark', enabled ? '1' : '0');
+  }
+  
+  darkToggle.addEventListener('click', ()=>{
+    const cur = localStorage.getItem('bb_dark') === '1';
+    applyDarkMode(!cur);
+  });
+  
+  // apply initial
+  if(localStorage.getItem('bb_dark') === '1') {
+    applyDarkMode(true);
+  }
+
+  // 6) Product modal (open when clicking image) - keep consistent with earlier pattern
+  document.querySelectorAll('.menu-img').forEach(img=>{
+    img.addEventListener('click', ()=>{
+      const name = img.dataset.name || img.closest('.card').querySelector('.card-title')?.textContent || '';
+      const price = img.dataset.price || '';
+      const desc = img.dataset.desc || '';
+      // create modal if not exists
+      if(!document.getElementById('productDetailModal')){
+        const modalHtml = `
+          <div class="modal fade" id="productDetailModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title" id="pdTitle"></h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body text-center">
+                  <img id="pdImg" class="img-fluid mb-3" style="max-height:320px;object-fit:cover;">
+                  <h5>Rp <span id="pdPrice"></span></h5>
+                  <p id="pdDesc" class="text-muted"></p>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                  <button class="btn btn-primary" id="pdAddBtn">+ Tambah ke Keranjang</button>
+                </div>
+              </div>
+            </div>
+          </div>`;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+      }
+      document.getElementById('pdTitle').textContent = name;
+      document.getElementById('pdPrice').textContent = price ? parseInt(price).toLocaleString() : '';
+      document.getElementById('pdDesc').textContent = desc;
+      document.getElementById('pdImg').src = img.src;
+      // show modal
+      const m = new bootstrap.Modal(document.getElementById("productDetailModal"));
+      m.show();
+      document.getElementById('pdAddBtn').onclick = ()=>{
+        addToCart(name, price);
+        showToast(`${name} ditambahkan ke keranjang.`);
+        m.hide();
+      };
+    });
+  });
+
+  // 7) Payment method selection
+  let selectedPaymentMethod = '';
+  document.querySelectorAll('.payment-method-card').forEach(card => {
+    card.addEventListener('click', function() {
+      document.querySelectorAll('.payment-method-card').forEach(c => c.classList.remove('selected'));
+      this.classList.add('selected');
+      selectedPaymentMethod = this.dataset.payment;
+    });
+  });
+
+  // 8) Checkout process
+  document.getElementById("checkoutBtn").addEventListener("click", ()=>{
+    if(cart.length===0){
+      showToast("Keranjang kosong!");
+      return;
+    }
+    if(!selectedPaymentMethod) {
+      showToast("Silakan pilih metode pembayaran!");
+      return;
+    }
+    // Get customer info from cart modal
+    const nama = document.getElementById("cartNama").value || '';
+    const kelas = document.getElementById("cartKelas").value || '';
+    const orderHour = document.getElementById("orderHour").value;
+    const orderMinute = document.getElementById("orderMinute").value;
+    const deliveryTime = `${orderHour}:${orderMinute}`;
+    // Close cart modal
+    bootstrap.Modal.getInstance(document.getElementById("cartModal")).hide();
+    // Show payment detail modal
+    showPaymentDetail(nama, kelas, deliveryTime);
+  });
+
+  // Ubah nomor Dana di paymentHTML
+  function showPaymentDetail(nama = '', kelas = '', deliveryTime = '') {
+    const modal = new bootstrap.Modal(document.getElementById('paymentDetailModal'));
+    const title = document.getElementById('paymentModalTitle');
+    const content = document.getElementById('paymentDetailContent');
+    
+    // Generate order details HTML
+    let orderHTML = "<div class='order-details'><h6>Detail Pesanan:</h6><ul>";
+    let total = 0;
+    cart.forEach(item => {
+      orderHTML += `<li>${item.qty}x ${item.name} - Rp ${(item.qty * item.price).toLocaleString()}</li>`;
+      total += item.qty * item.price;
+    });
+    orderHTML += `</ul><h6>Total: Rp ${total.toLocaleString()}</h6></div>`;
+    
+    // Generate payment method specific content
+    let paymentHTML = '';
+    switch(selectedPaymentMethod) {
+      case 'qris':
+        paymentHTML = `
+          <div class="qr-container">
+            <h6>Scan QR Code Berikut:</h6>
+            <img src="assets/qris.png" alt="QRIS ByteBites" style="width:200px;height:200px;border-radius:8px;background:#fff;">
+            <p class="text-muted">Total: Rp ${total.toLocaleString()}</p>
+            <p class="text-muted">Kode unik: ${Math.floor(Math.random() * 10000)}</p>
+          </div>`;
+        break;
+      case 'dana':
+        paymentHTML = `
+          <div class="dana-payment">
+            <h6>Pembayaran via Dana</h6>
+            <div class="bank-info">
+              <p><strong>Nomor Dana:</strong> 083825414742</p>
+              <p><strong>Total:</strong> Rp ${total.toLocaleString()}</p>
+              <p><strong>Kode Unik:</strong> ${Math.floor(Math.random() * 10000)}</p>
+              <button class="copy-btn" onclick="copyToClipboard('083825414742')">Salin Nomor</button>
+            </div>
+            <div class="mt-3">
+              <p class="text-muted">1. Buka aplikasi Dana</p>
+              <p class="text-muted">2. Pilih Bayar</p>
+              <p class="text-muted">3. Masukkan nomor di atas</p>
+              <p class="text-muted">4. Masukkan jumlah yang sesuai</p>
+              <p class="text-muted">5. Konfirmasi pembayaran</p>
+            </div>
+          </div>`;
+        break;
+      case 'transfer':
+        paymentHTML = `
+          <div class="bank-payment">
+            <h6>Transfer Bank</h6>
+            <div class="bank-info">
+              <p><strong>Bank:</strong> Bank Central Asia (BCA)</p>
+              <p><strong>No. Rekening:</strong> 123-456-7890</p>
+              <p><strong>Atas Nama:</strong> ByteBites Indonesia</p>
+              <p><strong>Total:</strong> Rp ${total.toLocaleString()}</p>
+              <p><strong>Kode Unik:</strong> ${Math.floor(Math.random() * 10000)}</p>
+              <button class="copy-btn" onclick="copyToClipboard('123-456-7890')">Salin No. Rekening</button>
+            </div>
+            <div class="mt-3">
+              <p class="text-muted">1. Transfer ke rekening di atas</p>
+              <p class="text-muted">2. Sertakan kode unik pada berita transfer</p>
+              <p class="text-muted">3. Konfirmasi pembayaran setelah transfer</p>
+            </div>
+          </div>`;
+        break;
+      case 'cod':
+        paymentHTML = `
+          <div class="cod-payment">
+            <h6>Pembayaran di Tempat (COD)</h6>
+            <div class="alert alert-info">
+              <i class="fas fa-info-circle me-2"></i>
+              Silakan siapkan uang tunai saat pesanan tiba.
+            </div>
+            <div class="bank-info">
+              <p><strong>Total:</strong> Rp ${total.toLocaleString()}</p>
+              <p><strong>Kode Unik:</strong> ${Math.floor(Math.random() * 10000)}</p>
+            </div>
+          </div>`;
+        break;
+    }
+    
+    title.textContent = `Pembayaran - ${selectedPaymentMethod.toUpperCase()}`;
+    content.innerHTML = orderHTML + paymentHTML;
+    
+    modal.show();
+    
+    // Generate QR code if QRIS is selected
+    if (selectedPaymentMethod === 'qris') {
+      setTimeout(() => {
+        new QRCode(document.getElementById("qrcode"), {
+          text: `bytebites-payment:${total}:${Math.floor(Math.random() * 10000)}`,
+          width: 200,
+          height: 200,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      }, 100);
+    }
+  }
+
+  // 9) Process payment
+  document.getElementById('processPaymentBtn').addEventListener('click', function() {
+    const loadingSpinner = document.createElement('div');
+    loadingSpinner.className = 'loading-spinner active';
+    loadingSpinner.innerHTML = '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p>Memproses pembayaran...</p>';
+    
+    const modalFooter = this.closest('.modal-footer');
+    const originalFooter = modalFooter.innerHTML;
+    modalFooter.innerHTML = '';
+    modalFooter.appendChild(loadingSpinner);
+    
+    // Get customer info
+    const nama = document.getElementById("cartNama").value || 'Tidak diisi';
+    const kelas = document.getElementById("cartKelas").value || 'Tidak diisi';
+    const orderHour = document.getElementById("orderHour").value;
+    const orderMinute = document.getElementById("orderMinute").value;
+    const deliveryTime = `${orderHour}:${orderMinute}`;
+    
+    // Simulate payment processing
+    setTimeout(() => {
+      // Save transaction to localStorage
+      const transaction = {
+        id: 'TRX-' + Date.now(),
+        date: new Date().toISOString(),
+        items: [...cart],
+        total: cart.reduce((sum, item) => sum + (item.price * item.qty), 0),
+        paymentMethod: selectedPaymentMethod,
+        status: 'pending',
+        nama: nama,
+        kelas: kelas,
+        deliveryTime: deliveryTime
+      };
+      // Get existing transactions or create new array
+      let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+      transactions.unshift(transaction);
+      localStorage.setItem('transactions', JSON.stringify(transactions));
+      
+      // Show success message
+      showToast('Pembayaran berhasil! Pesanan Anda sedang diproses.', 'Sukses');
+      
+      // Close modal
+      bootstrap.Modal.getInstance(document.getElementById('paymentDetailModal')).hide();
+      
+      // Clear cart
+      cart = [];
+      updateCart();
+      
+      // Clear customer info
+      document.getElementById("cartNama").value = '';
+      document.getElementById("cartKelas").value = '';
+      
+      // Restore footer
+      modalFooter.innerHTML = originalFooter;
+      
+      // Update transaction history
+      loadTransactionHistory();
+      
+      // Send WhatsApp notification (langsung tanpa cek pengaturan)
+      sendWhatsAppNotification(transaction);
+    }, 2000);
+  });
+
+  // ================ WHATSAPP NOTIFICATION FUNCTIONS ================
+  function sendWhatsAppNotification(transaction) {
+    // Nomor WA selalu ke 083825414742 (format internasional: 6283825414742)
+    const sellerPhone = '6283825414742';
+    let message = `*PESANAN BARU - ByteBites*\n\n`;
+    message += `ID: ${transaction.id}\n`;
+    message += `Tanggal: ${new Date(transaction.date).toLocaleString()}\n`;
+    message += `Pelanggan: ${transaction.nama}\n`;
+    message += `Kelas: ${transaction.kelas}\n`;
+    if (transaction.deliveryTime) {
+      message += `Jam Pengantaran: ${transaction.deliveryTime}\n`;
+    }
+    message += `Metode Pembayaran: ${transaction.paymentMethod}\n`;
+    message += `Status: ${transaction.status}\n\n`;
+    message += `*Detail Pesanan:*\n`;
+    transaction.items.forEach(item => {
+      message += `- ${item.qty}x ${item.name} = Rp ${(item.qty * item.price).toLocaleString()}\n`;
+    });
+    message += `\n*Total: Rp ${transaction.total.toLocaleString()}*`;
+    // Buat link WhatsApp
+    const waLink = `https://wa.me/${sellerPhone}?text=${encodeURIComponent(message)}`;
+    // Selalu buka WhatsApp popup
+    window.open(waLink, '_blank');
+    showToast('WhatsApp dibuka dengan pesan notifikasi', 'Sukses');
+  }
+
+  // ================ ADMIN PANEL FUNCTIONS ================
+  // Footer content management
+  const defaultFooterContent = {
+    brand: 'ByteBites',
+    desc: 'Nikmati minuman favoritmu dengan kemudahan belanja online. Spesial, combo, atau reguler, semua ada di sini.',
+    about: 'ByteBites hadir untuk menghadirkan pengalaman minum kopi yang menyenangkan dengan berbagai pilihan menu spesial hingga reguler.',
+    address: 'SMKN 1 Garut, Jl. Otto Iskandardinata No.71, Kota Garut, Jawa Barat 44151',
+    phone: '+62 853 2000 2950',
+    email: 'info@bytebites.com',
+    fb: '#',
+    twitter: '#',
+    ig: '#',
+    wa: '#',
+    year: new Date().getFullYear(),
+    companyName: 'ByteBites'
+  };
+
+  // Default settings
+  const defaultSettings = {
+    orderEnabled: true,
+    openHour: '07',
+    closeHour: '17',
+    globalDiscount: 0,
+    waNumber: '6283825414742', // Default nomor WhatsApp
+    waNotificationEnabled: true,
+    waNotificationMode: 'both'
+  };
+
+  // Load footer content from localStorage or use default
+  function loadFooterContent() {
+    const saved = localStorage.getItem('footerContent');
+    const content = saved ? JSON.parse(saved) : defaultFooterContent;
+    
+    // Update footer elements
+    document.getElementById('footerBrand').textContent = content.brand;
+    document.getElementById('footerDesc').textContent = content.desc;
+    document.getElementById('footerAbout').textContent = content.about;
+    document.getElementById('footerAddress').textContent = content.address;
+    document.getElementById('footerPhone').textContent = content.phone;
+    document.getElementById('footerEmail').textContent = content.email;
+    document.getElementById('footerFb').href = content.fb;
+    document.getElementById('footerTwitter').href = content.twitter;
+    document.getElementById('footerIg').href = content.ig;
+    document.getElementById('footerWa').href = content.wa;
+    document.getElementById('footerYear').textContent = content.year;
+    document.getElementById('footerCompanyName').textContent = content.companyName;
+  }
+
+  // Load settings from localStorage or use default
+  function loadSettings() {
+    const saved = localStorage.getItem('settings');
+    const settings = saved ? JSON.parse(saved) : defaultSettings;
+    
+    // Update settings elements
+    document.getElementById('orderEnabled').checked = settings.orderEnabled;
+    document.getElementById('openHour').value = settings.openHour;
+    document.getElementById('closeHour').value = settings.closeHour;
+    document.getElementById('globalDiscount').value = settings.globalDiscount;
+    
+    // Update WhatsApp notification settings
+    document.getElementById('adminWaNumber').value = settings.waNumber || '';
+    document.getElementById('waNotificationEnabled').checked = settings.waNotificationEnabled || false;
+    document.getElementById('waNotificationMode').value = settings.waNotificationMode || 'both';
+    
+    // Apply order enabled setting
+    applyOrderEnabled(settings.orderEnabled);
+    
+    // Apply global discount
+    applyGlobalDiscount(settings.globalDiscount);
+  }
+
+  // Apply order enabled setting
+  function applyOrderEnabled(enabled) {
+    const menuContainer = document.getElementById('menuContainer');
+    const orderDisabledBanner = document.getElementById('orderDisabledBanner');
+    
+    if (enabled) {
+      menuContainer.classList.remove('disabled-order');
+      orderDisabledBanner.style.display = 'none';
+    } else {
+      menuContainer.classList.add('disabled-order');
+      orderDisabledBanner.style.display = 'block';
+    }
+  }
+
+  // Apply global discount
+  function applyGlobalDiscount(discount) {
+    // Update all menu prices with discount
+    document.querySelectorAll('.menu-card').forEach(card => {
+      const priceElement = card.querySelector('.card-text');
+      const discountBadge = card.querySelector('.discount-badge');
+      
+      if (discount > 0) {
+        const originalPrice = parseInt(card.querySelector('.add-btn').dataset.price);
+        const discountedPrice = Math.round(originalPrice * (1 - discount / 100));
+        
+        if (discountBadge) {
+          discountBadge.textContent = `-${discount}%`;
+        } else {
+          const newBadge = document.createElement('span');
+          newBadge.className = 'discount-badge';
+          newBadge.textContent = `-${discount}%`;
+          card.querySelector('.menu-img-container').appendChild(newBadge);
+        }
+        
+        priceElement.innerHTML = `<del>Rp ${originalPrice.toLocaleString()}</del> Rp ${discountedPrice.toLocaleString()}`;
+      } else {
+        if (discountBadge) {
+          discountBadge.remove();
+        }
+        const originalPrice = parseInt(card.querySelector('.add-btn').dataset.price);
+        priceElement.textContent = `Rp ${originalPrice.toLocaleString()}`;
+      }
+    });
+  }
+
+  // Admin panel functions
+  function openAdminPanel() {
+    document.getElementById('adminPanel').classList.add('active');
+    document.getElementById('adminPassword').value = '';
+    document.getElementById('adminLogin').style.display = 'block';
+    document.getElementById('adminDashboard').style.display = 'none';
+  }
+
+  function closeAdminPanel() {
+    document.getElementById('adminPanel').classList.remove('active');
+  }
+
+  function adminLogin() {
+    const password = document.getElementById('adminPassword').value;
+    if (password === 'kanjut123.') {
+      document.getElementById('adminLogin').style.display = 'none';
+      document.getElementById('adminDashboard').style.display = 'block';
+      loadAdminForm();
+      loadSettings();
+      showToast('Login berhasil!', 'Sukses');
+    } else {
+      showToast('Password salah!', 'Error');
+    }
+  }
+
+  function loadAdminForm() {
+    const content = JSON.parse(localStorage.getItem('footerContent')) || defaultFooterContent;
+    
+    document.getElementById('adminBrand').value = content.brand;
+    document.getElementById('adminDesc').value = content.desc;
+    document.getElementById('adminAbout').value = content.about;
+    document.getElementById('adminAddress').value = content.address;
+    document.getElementById('adminPhone').value = content.phone;
+    document.getElementById('adminEmail').value = content.email;
+    document.getElementById('adminFb').value = content.fb;
+    document.getElementById('adminTwitter').value = content.twitter;
+    document.getElementById('adminIg').value = content.ig;
+    document.getElementById('adminWa').value = content.wa;
+    document.getElementById('adminYear').value = content.year;
+  }
+
+  function saveFooterContent() {
+    const content = {
+      brand: document.getElementById('adminBrand').value,
+      desc: document.getElementById('adminDesc').value,
+      about: document.getElementById('adminAbout').value,
+      address: document.getElementById('adminAddress').value,
+      phone: document.getElementById('adminPhone').value,
+      email: document.getElementById('adminEmail').value,
+      fb: document.getElementById('adminFb').value,
+      twitter: document.getElementById('adminTwitter').value,
+      ig: document.getElementById('adminIg').value,
+      wa: document.getElementById('adminWa').value,
+      year: document.getElementById('adminYear').value,
+      companyName: document.getElementById('footerCompanyName').value || 'ByteBites'
+    };
+    
+    localStorage.setItem('footerContent', JSON.stringify(content));
+    loadFooterContent();
+    showToast('Konten footer berhasil disimpan!', 'Sukses');
+  }
+
+  function resetFooterContent() {
+    if (confirm('Apakah Anda yakin ingin mereset ke konten default?')) {
+      localStorage.removeItem('footerContent');
+      loadFooterContent();
+      loadAdminForm();
+      showToast('Konten footer direset ke default', 'Info');
+    }
+  }
+
+  function saveSettings() {
+    const settings = {
+      orderEnabled: document.getElementById('orderEnabled').checked,
+      openHour: document.getElementById('openHour').value,
+      closeHour: document.getElementById('closeHour').value,
+      globalDiscount: parseInt(document.getElementById('globalDiscount').value) || 0,
+      waNumber: document.getElementById('adminWaNumber').value,
+      waNotificationEnabled: document.getElementById('waNotificationEnabled').checked,
+      waNotificationMode: document.getElementById('waNotificationMode').value
+    };
+    
+    localStorage.setItem('settings', JSON.stringify(settings));
+    
+    // Apply settings
+    applyOrderEnabled(settings.orderEnabled);
+    applyGlobalDiscount(settings.globalDiscount);
+    
+    showToast('Pengaturan berhasil disimpan!', 'Sukses');
+  }
+
+  function resetSettings() {
+    if (confirm('Apakah Anda yakin ingin mereset ke pengaturan default?')) {
+      localStorage.removeItem('settings');
+      loadSettings();
+      showToast('Pengaturan direset ke default', 'Info');
+    }
+  }
+
+  // Load admin transactions
+  function loadAdminTransactions() {
+    const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    const tbody = document.getElementById('adminTransactionsList');
+    tbody.innerHTML = '';
+    
+    if (transactions.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" class="text-center">Tidak ada transaksi</td></tr>';
+      return;
+    }
+    
+    transactions.forEach((transaction, index) => {
+      const date = new Date(transaction.date);
+      const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+      
+      let statusOptions = '';
+      ['pending', 'success', 'failed'].forEach(status => {
+        const statusText = status.charAt(0).toUpperCase() + status.slice(1);
+        statusOptions += `<option value="${status}" ${transaction.status === status ? 'selected' : ''}>${statusText}</option>`;
+      });
+      
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${transaction.id}</td>
+        <td>${formattedDate}</td>
+        <td>${transaction.nama}</td>
+        <td>Rp ${transaction.total.toLocaleString()}</td>
+        <td>${transaction.paymentMethod}</td>
+        <td>
+          <select class="form-select form-select-sm status-select" data-index="${index}">
+            ${statusOptions}
+          </select>
+        </td>
+        <td>
+          <button class="btn btn-sm btn-primary save-status-btn" data-index="${index}">Simpan</button>
+          <button class="btn btn-sm btn-info view-detail-btn" data-index="${index}">Detail</button>
+          <button class="btn btn-sm btn-warning edit-transaction-btn" data-index="${index}">Edit</button>
+          <button class="btn btn-sm btn-danger delete-transaction-btn" data-index="${index}">Hapus</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+    
+    // Tambahkan event listener untuk tombol simpan
+    document.querySelectorAll('.save-status-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const index = this.getAttribute('data-index');
+        const statusSelect = document.querySelector(`.status-select[data-index="${index}"]`);
+        const newStatus = statusSelect.value;
+        
+        // Update status di localStorage
+        let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        transactions[index].status = newStatus;
+        localStorage.setItem('transactions', JSON.stringify(transactions));
+        
+        // Tampilkan notifikasi
+        showToast(`Status transaksi ${transactions[index].id} diperbarui menjadi ${newStatus}`, 'Sukses');
+        
+        // Refresh tampilan transaksi di admin dan di halaman utama
+        loadAdminTransactions();
+        loadTransactionHistory();
+      });
+    });
+    
+    // Tambahkan event listener untuk tombol detail
+    document.querySelectorAll('.view-detail-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const index = this.getAttribute('data-index');
+        const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        const transaction = transactions[index];
+        
+        // Close admin panel temporarily
+        closeAdminPanel();
+        
+        // Show transaction detail
+        showTransactionDetail(transaction);
+        
+        // Reopen admin panel after modal is closed
+        document.getElementById('transactionDetailModal').addEventListener('hidden.bs.modal', function() {
+          openAdminPanel();
+          // Switch to transactions tab
+          document.getElementById('transactions-tab').click();
+        }, { once: true });
+      });
+    });
+    
+    // Tambahkan event listener untuk tombol edit
+    document.querySelectorAll('.edit-transaction-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const index = this.getAttribute('data-index');
+        const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        const transaction = transactions[index];
+        
+        // Show edit transaction modal
+        showEditTransactionModal(transaction, index);
+      });
+    });
+    
+    // Tambahkan event listener untuk tombol hapus
+    document.querySelectorAll('.delete-transaction-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const index = this.getAttribute('data-index');
+        
+        if (confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) {
+          // Delete transaction from localStorage
+          let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+          const deletedTransaction = transactions.splice(index, 1)[0];
+          localStorage.setItem('transactions', JSON.stringify(transactions));
+          
+          // Show notification
+          showToast(`Transaksi ${deletedTransaction.id} berhasil dihapus`, 'Sukses');
+          
+          // Refresh transaction lists
+          loadAdminTransactions();
+          loadTransactionHistory();
+        }
+      });
+    });
+  }
+
+  // Show edit transaction modal
+  function showEditTransactionModal(transaction, index) {
+    // Create modal if not exists
+    if (!document.getElementById('editTransactionModal')) {
+      const modalHtml = `
+        <div class="modal fade" id="editTransactionModal" tabindex="-1">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Edit Transaksi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body" id="editTransactionContent">
+                <!-- Edit form will be loaded here -->
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" id="saveTransactionBtn">Simpan Perubahan</button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+    
+    const modal = new bootstrap.Modal(document.getElementById('editTransactionModal'));
+    const content = document.getElementById('editTransactionContent');
+    
+    // Generate edit form HTML
+    let itemsHTML = '';
+    let total = 0;
+    transaction.items.forEach((item, itemIndex) => {
+      const itemTotal = item.qty * item.price;
+      total += itemTotal;
+      
+      itemsHTML += `
+        <div class="edit-item-row" data-item-index="${itemIndex}">
+          <div class="item-name">${item.name}</div>
+          <div class="item-qty">
+            <input type="number" class="form-control form-control-sm item-qty-input" value="${item.qty}" min="1" data-item-index="${itemIndex}">
+          </div>
+          <div class="item-price">
+            <input type="number" class="form-control form-control-sm item-price-input" value="${item.price}" min="0" data-item-index="${itemIndex}">
+          </div>
+          <div class="item-discount">
+            <input type="number" class="form-control form-control-sm item-discount-input" value="${item.discount || 0}" min="0" max="100" data-item-index="${itemIndex}">
+          </div>
+          <div class="item-total">Rp ${itemTotal.toLocaleString()}</div>
+          <div class="item-action">
+            <button class="btn btn-sm btn-danger remove-item-btn" data-item-index="${itemIndex}"><i class="fas fa-trash"></i></button>
+          </div>
+        </div>
+      `;
+    });
+    
+    content.innerHTML = `
+      <div class="transaction-edit">
+        <div class="mb-3">
+          <label class="form-label">ID Transaksi</label>
+          <input type="text" class="form-control" value="${transaction.id}" readonly>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Nama Pelanggan</label>
+          <input type="text" class="form-control" id="editNama" value="${transaction.nama}">
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Kelas</label>
+          <input type="text" class="form-control" id="editKelas" value="${transaction.kelas}">
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Jam Pengantaran</label>
+          <input type="text" class="form-control" id="editDeliveryTime" value="${transaction.deliveryTime || ''}">
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Items</label>
+          <div class="items-container">
+            ${itemsHTML}
+          </div>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Total</label>
+          <div class="d-flex align-items-center">
+            <input type="number" class="form-control me-2" id="editTotal" value="${total}" readonly>
+            <button class="btn btn-sm btn-success" id="addItemBtn"><i class="fas fa-plus"></i> Tambah Item</button>
+          </div>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="editStatus">
+            <option value="pending" ${transaction.status === 'pending' ? 'selected' : ''}>Pending</option>
+            <option value="success" ${transaction.status === 'success' ? 'selected' : ''}>Success</option>
+            <option value="failed" ${transaction.status === 'failed' ? 'selected' : ''}>Failed</option>
+          </select>
+        </div>
+      </div>
+    `;
+    
+    modal.show();
+    
+    // Add event listeners
+    document.getElementById('saveTransactionBtn').onclick = function() {
+      saveEditedTransaction(index);
+    };
+    
+    document.getElementById('addItemBtn').onclick = function() {
+      addNewItemToTransaction();
+    };
+    
+    // Add event listeners for item inputs
+    document.querySelectorAll('.item-qty-input, .item-price-input, .item-discount-input').forEach(input => {
+      input.addEventListener('input', function() {
+        updateItemTotal(this.getAttribute('data-item-index'));
+        updateTransactionTotal();
+      });
+    });
+    
+    // Add event listeners for remove item buttons
+    document.querySelectorAll('.remove-item-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        removeItemFromTransaction(this.getAttribute('data-item-index'));
+      });
+    });
+  }
+
+  // Update item total
+  function updateItemTotal(itemIndex) {
+    const qtyInput = document.querySelector(`.item-qty-input[data-item-index="${itemIndex}"]`);
+    const priceInput = document.querySelector(`.item-price-input[data-item-index="${itemIndex}"]`);
+    const discountInput = document.querySelector(`.item-discount-input[data-item-index="${itemIndex}"]`);
+    const totalElement = document.querySelector(`.edit-item-row[data-item-index="${itemIndex}"] .item-total`);
+    
+    const qty = parseInt(qtyInput.value) || 0;
+    const price = parseInt(priceInput.value) || 0;
+    const discount = parseInt(discountInput.value) || 0;
+    
+    const discountedPrice = Math.round(price * (1 - discount / 100));
+    const total = qty * discountedPrice;
+    
+    totalElement.textContent = `Rp ${total.toLocaleString()}`;
+  }
+
+  // Update transaction total
+  function updateTransactionTotal() {
+    const totalElements = document.querySelectorAll('.edit-item-row .item-total');
+    let total = 0;
+    
+    totalElements.forEach(element => {
+      const value = element.textContent.replace('Rp ', '').replace(/\./g, '');
+      total += parseInt(value) || 0;
+    });
+    
+    document.getElementById('editTotal').value = total;
+  }
+
+  // Add new item to transaction
+  function addNewItemToTransaction() {
+    const container = document.querySelector('.items-container');
+    const itemCount = container.querySelectorAll('.edit-item-row').length;
+    
+    const newItemHtml = `
+      <div class="edit-item-row" data-item-index="${itemCount}">
+        <div class="item-name">
+          <input type="text" class="form-control form-control-sm item-name-input" placeholder="Nama item" data-item-index="${itemCount}">
+        </div>
+        <div class="item-qty">
+          <input type="number" class="form-control form-control-sm item-qty-input" value="1" min="1" data-item-index="${itemCount}">
+        </div>
+        <div class="item-price">
+          <input type="number" class="form-control form-control-sm item-price-input" value="0" min="0" data-item-index="${itemCount}">
+        </div>
+        <div class="item-discount">
+          <input type="number" class="form-control form-control-sm item-discount-input" value="0" min="0" max="100" data-item-index="${itemCount}">
+        </div>
+        <div class="item-total">Rp 0</div>
+        <div class="item-action">
+          <button class="btn btn-sm btn-danger remove-item-btn" data-item-index="${itemCount}"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    `;
+    
+    container.insertAdjacentHTML('beforeend', newItemHtml);
+    
+    // Add event listeners for the new item
+    const newItemIndex = itemCount;
+    document.querySelectorAll(`.item-qty-input[data-item-index="${newItemIndex}"], .item-price-input[data-item-index="${newItemIndex}"], .item-discount-input[data-item-index="${newItemIndex}"]`).forEach(input => {
+      input.addEventListener('input', function() {
+        updateItemTotal(this.getAttribute('data-item-index'));
+        updateTransactionTotal();
+      });
+    });
+    
+    document.querySelector(`.remove-item-btn[data-item-index="${newItemIndex}"]`).addEventListener('click', function() {
+      removeItemFromTransaction(this.getAttribute('data-item-index'));
+    });
+  }
+
+  // Remove item from transaction
+  function removeItemFromTransaction(itemIndex) {
+    const itemRow = document.querySelector(`.edit-item-row[data-item-index="${itemIndex}"]`);
+    itemRow.remove();
+    
+    // Update all item indices
+    document.querySelectorAll('.edit-item-row').forEach((row, index) => {
+      row.setAttribute('data-item-index', index);
+      
+      // Update all input data-item-index attributes
+      row.querySelectorAll('[data-item-index]').forEach(input => {
+        input.setAttribute('data-item-index', index);
+      });
+    });
+    
+    updateTransactionTotal();
+  }
+
+  // Save edited transaction
+  function saveEditedTransaction(index) {
+    // Get transaction data from form
+    const nama = document.getElementById('editNama').value;
+    const kelas = document.getElementById('editKelas').value;
+    const deliveryTime = document.getElementById('editDeliveryTime').value;
+    const status = document.getElementById('editStatus').value;
+    const total = parseInt(document.getElementById('editTotal').value) || 0;
+    
+    // Get items data
+    const items = [];
+    document.querySelectorAll('.edit-item-row').forEach(row => {
+      const itemIndex = row.getAttribute('data-item-index');
+      const name = row.querySelector('.item-name-input').value;
+      const qty = parseInt(row.querySelector('.item-qty-input').value) || 0;
+      const price = parseInt(row.querySelector('.item-price-input').value) || 0;
+      const discount = parseInt(row.querySelector('.item-discount-input').value) || 0;
+      
+      if (name && qty > 0 && price > 0) {
+        items.push({
+          name: name,
+          qty: qty,
+          price: price,
+          discount: discount
+        });
+      }
+    });
+    
+    // Update transaction in localStorage
+    let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    transactions[index] = {
+      ...transactions[index],
+      nama: nama,
+      kelas: kelas,
+      deliveryTime: deliveryTime,
+      status: status,
+      total: total,
+      items: items
+    };
+    
+    localStorage.setItem('transactions', JSON.stringify(transactions));
+    
+    // Show notification
+    showToast(`Transaksi ${transactions[index].id} berhasil diperbarui`, 'Sukses');
+    
+    // Close modal
+    bootstrap.Modal.getInstance(document.getElementById('editTransactionModal')).hide();
+    
+    // Refresh transaction lists
+    loadAdminTransactions();
+    loadTransactionHistory();
+  }
+
+  // Load transaction history on page load
+  function loadTransactionHistory() {
+    const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+    const historyDiv = document.getElementById('transactionHistory');
+    historyDiv.innerHTML = '';
+    if (transactions.length === 0) {
+      historyDiv.innerHTML = '<div class="text-center text-muted py-4">Belum ada transaksi.</div>';
+      return;
+    }
+    // Tampilkan hanya 5 transaksi terbaru
+    const maxShow = 5;
+    const showAll = historyDiv.getAttribute('data-show-all') === '1';
+    const list = showAll ? transactions : transactions.slice(0, maxShow);
+
+    list.forEach(trx => {
+      const date = new Date(trx.date);
+      const statusClass = trx.status === 'success' ? 'status-success' : (trx.status === 'failed' ? 'status-failed' : 'status-pending');
+      let itemsHtml = '';
+      trx.items.forEach(item => {
+        itemsHtml += `<li>${item.qty}x ${item.name} - Rp ${(item.qty * item.price).toLocaleString()}</li>`;
+      });
+      historyDiv.innerHTML += `
+        <div class="transaction-item">
+          <div><strong>ID:</strong> ${trx.id}</div>
+          <div><strong>Tanggal:</strong> ${date.toLocaleString()}</div>
+          <div><strong>Pelanggan:</strong> ${trx.nama} (${trx.kelas})</div>
+          <div><strong>Jam Pengantaran:</strong> ${trx.deliveryTime || '-'}</div>
+          <div><strong>Metode:</strong> ${trx.paymentMethod}</div>
+          <div><strong>Status:</strong> <span class="transaction-status ${statusClass}">${trx.status}</span></div>
+          <div><strong>Pesanan:</strong><ul>${itemsHtml}</ul></div>
+          <div><strong>Total:</strong> Rp ${trx.total.toLocaleString()}</div>
+        </div>
+      `;
+    });
+
+    // Tombol lihat semua jika transaksi > 5
+    if (!showAll && transactions.length > maxShow) {
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-sm btn-primary w-100 mt-2';
+      btn.textContent = 'Lihat Semua Riwayat';
+      btn.onclick = function() {
+        historyDiv.setAttribute('data-show-all', '1');
+        loadTransactionHistory();
+      };
+      historyDiv.appendChild(btn);
+    }
+    // Tombol sembunyikan jika sedang lihat semua
+    if (showAll && transactions.length > maxShow) {
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-sm btn-secondary w-100 mt-2';
+      btn.textContent = 'Sembunyikan Riwayat';
+      btn.onclick = function() {
+        historyDiv.setAttribute('data-show-all', '0');
+        loadTransactionHistory();
+      };
+      historyDiv.appendChild(btn);
+    }
+  }
+  // Panggil saat halaman dimuat
+  document.addEventListener('DOMContentLoaded', function() {
+    loadFooterContent();
+    loadSettings();
+    loadTransactionHistory(); // <--- Tambahkan ini
+    
+    // Hamburger menu animation
+    const navbarToggler = document.querySelector('.navbar-toggler');
+    const hamburger = document.querySelector('.hamburger');
+    
+    navbarToggler.addEventListener('click', function() {
+      this.classList.toggle('active');
+    });
+  });
+</script>
+</body>
+</html>

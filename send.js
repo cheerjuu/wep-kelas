@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
       // Login
       const password = prompt("Masukkan password admin:");
-      if (password === "ppladmin") {
+      if (password === "adminlagu") {
         showToast("Login berhasil!", "success");
         adminMode = true;
         clearHistoryBtn.style.display = "flex";

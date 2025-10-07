@@ -281,7 +281,7 @@
         white-space: nowrap;
         overflow: hidden;
         width: 0;
-        animation: typing 2s steps(30, end) forwards, blink 0.8s step-end infinite alternate;
+        animation: typing 4s steps(30, end) forwards, blink 1s step-end infinite alternate;
         color: #333;
         font-size: 1rem;
         margin-top: 0.5rem;
@@ -295,6 +295,38 @@
         from { border-color: transparent; }
         to { border-color: #00c6ff; }
       }
+
+/* Pastikan isi hero di atas bubble */
+      .hero-box {
+        position: relative;
+        z-index: 2;
+      }
+
+      /* Efek hover pada judul hero */
+      .hero h1:hover {
+        text-shadow: 0 4px 24px rgba(0,198,255,0.3);
+        transition: text-shadow 0.3s;
+      }
+
+      /* Hero box untuk mobile (glassmorphism) */
+      @media (max-width: 768px) {
+        .hero {
+          padding: 3rem 1.2rem;
+        }
+        .hero .hero-box {
+          background: rgba(255,255,255,0.6);
+          backdrop-filter: blur(10px);
+          padding: 1.5rem;
+          border-radius: 16px;
+          box-shadow: 0 4px 20px rgba(0,114,255,0.15);
+          display: inline-block;
+        }
+        .hero-bubble {
+          background: rgba(0,114,255,0.25);
+          box-shadow: 0 0 12px rgba(0,114,255,0.6);
+        }
+      }
+
 
       /* Bubble animasi background */
       .hero-bubbles {
@@ -337,37 +369,7 @@
         100% { transform: translateY(-120px) scale(1.2); opacity: 0; }
       }
 
-      /* Pastikan isi hero di atas bubble */
-      .hero-box {
-        position: relative;
-        z-index: 2;
-      }
-
-      /* Efek hover pada judul hero */
-      .hero h1:hover {
-        text-shadow: 0 4px 24px rgba(0,198,255,0.3);
-        transition: text-shadow 0.3s;
-      }
-
-      /* Hero box untuk mobile (glassmorphism) */
-      @media (max-width: 768px) {
-        .hero {
-          padding: 3rem 1.2rem;
-        }
-        .hero .hero-box {
-          background: rgba(255,255,255,0.6);
-          backdrop-filter: blur(10px);
-          padding: 1.5rem;
-          border-radius: 16px;
-          box-shadow: 0 4px 20px rgba(0,114,255,0.15);
-          display: inline-block;
-        }
-        .hero-bubble {
-          background: rgba(0,114,255,0.25);
-          box-shadow: 0 0 12px rgba(0,114,255,0.6);
-        }
-      }
-
+      
       /* About */
       .about {
         text-align: center;
@@ -934,6 +936,8 @@
         <li><a href="#hero">Home</a></li>
         <li><a href="#about">Tentang</a></li>
         <li><a href="#menu">Menu</a></li>
+        <li><a href="#extras">Send The Song</a></li>
+        <li><a href="#anggota-link">Anggota Kelas</a></li>
         <li><a href="#contact">Kenangan</a></li>
       </ul>
     </nav>
@@ -978,25 +982,25 @@
         <div class="card reveal">
           <span class="tag">Kelompok 1</span>
           <div class="card-image-container">
-            <img src="https://picsum.photos/seed/tokogizi/400/300.jpg" alt="TokoGizi">
+            <img src="assets/gejrotposter.jpg" alt="TokoGizi">
           </div>
-          <h3>TokoGizi</h3>
-          <p>Snack & minuman dingin. Siap ngerjain bug laparmu.</p>
+          <h3>Gejrot Gembira</h3>
+          <p>Mood swing? Gejrotin aja!.</p>
           <a href="https://ffaaiii.github.io/web-jualan-benar/" class="btn">Masuk Toko</a>
         </div>
         <div class="card reveal">
           <span class="tag">Kelompok 2</span>
           <div class="card-image-container">
-            <img src="https://picsum.photos/seed/bytebites/400/300.jpg" alt="ByteBites">
+            <img src="assets/poster.png" alt="ByteBites">
           </div>
           <h3>ByteBites</h3>
-          <p>Mi seduh, roti, kopi — pointer ke perut bahagia.</p>
+          <p>Siapa kita? ByteBites! Siapa kita? ByteBites! Siapa kita? ByteBites! ByteBites Ngeunah!</p>
           <a href="https://cheerjuu.github.io/wep/" class="btn">Masuk Toko</a>
         </div>
         <div class="card reveal">
           <span class="tag">Kelompok 3</span>
           <div class="card-image-container">
-            <img src="https://picsum.photos/seed/mantaporia/400/300.jpg" alt="Mantaporia">
+            <img src="assets/klmpk3.jpg" alt="Mantaporia">
           </div>
           <h3>Mantaporia</h3>
           <p>Pilih segar es Kuwut atau manis Sando Fruit? Kenapa ga dua-duanya di Mantaporia!.</p>
@@ -1005,7 +1009,7 @@
         <div class="card reveal">
           <span class="tag">Kelompok 4</span>
           <div class="card-image-container">
-            <img src="https://picsum.photos/seed/dolpin/400/300.jpg" alt="Dolpin Four Store">
+            <img src="assets/kelompok4poster.jpg" alt="Dolpin Four Store">
           </div>
           <h3>Dolpin Four Store</h3>
           <p>Cokelat, permen, wafer. Manisnya auto-commit.</p>
@@ -1016,7 +1020,7 @@
 
     <!-- Tambahin section/link setelah Menu -->
     <section id="extras" class="extras">
-      <h2 class="reveal">Interaktif</h2>
+      <h2 class="reveal">Send The Song</h2>
       <a href="send-message.html" class="btn btn-pulse reveal">Kirim Pesan / Lagu 🎵</a>
     </section>
 
@@ -1048,6 +1052,8 @@
             <a href="#hero" style="color:white;text-decoration:none;opacity:0.92;transition:0.2s;">Home</a>
             <a href="#about" style="color:white;text-decoration:none;opacity:0.92;transition:0.2s;">Tentang</a>
             <a href="#menu" style="color:white;text-decoration:none;opacity:0.92;transition:0.2s;">Menu</a>
+            <a href="#extras" style="color:white;text-decoration:none;opacity:0.92;transition:0.2s;">Send The Song</a>
+            <a href="#anggota-link" style="color:white;text-decoration:none;opacity:0.92;transition:0.2s;">Anggota Kelas</a>
             <a href="#contact" style="color:white;text-decoration:none;opacity:0.92;transition:0.2s;">Kenangan</a>
           </div>
         </div>
